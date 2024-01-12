@@ -20,10 +20,10 @@ event_log = pd.read_csv(event_log_path, sep=";")
 event_log = multi_perspective_dfg_viewer.format_log(event_log)
 
 (
-    multi_persperctive_dfg,
+    multi_perspective_dfg,
     start_activities,
     end_activities,
 ) = multi_perspective_dfg_viewer.discover_multi_perspective_dfg(event_log)
 
 
-pretty_print_dict(multi_persperctive_dfg)
+pretty_print_dict(multi_perspective_dfg)
