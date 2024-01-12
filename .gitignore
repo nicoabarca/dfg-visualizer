@@ -1,3 +1,6 @@
+# Logs data folder
+/data
+
 # IDEs
 /.idea
 .vscode/
