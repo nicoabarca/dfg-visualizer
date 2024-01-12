@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Tuple
-from multi_persperctive_dfg_viewer.get_log_properties import get_log_properties
-from multi_persperctive_dfg_viewer.algo.get_multi_perspercitive_dfg import (
+from multi_perspective_dfg_viewer.get_log_properties import get_log_properties
+from multi_perspective_dfg_viewer.algo.get_multi_perspective_dfg import (
     get_multi_perspective_dfg,
 )
 
