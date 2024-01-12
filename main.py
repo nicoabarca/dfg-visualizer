@@ -27,3 +27,9 @@ event_log = multi_perspective_dfg_viewer.format_log(event_log)
 
 
 pretty_print_dict(multi_perspective_dfg)
+
+print("START ACTIVITIES")
+print(start_activities)
+
+print("END ACTIVITIES")
+print(end_activities)

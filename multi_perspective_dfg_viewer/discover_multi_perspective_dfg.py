@@ -1,8 +1,12 @@
 import pandas as pd
 from typing import Tuple
 from multi_perspective_dfg_viewer.get_log_properties import get_log_properties
-from multi_perspective_dfg_viewer.algo.get_multi_perspective_dfg import (
+from multi_perspective_dfg_viewer.get_multi_perspective_dfg import (
     get_multi_perspective_dfg,
+)
+from multi_perspective_dfg_viewer.activities import (
+    get_start_activities,
+    get_end_activities,
 )
 
 
@@ -20,8 +24,8 @@ def discover_multi_perspective_dfg(
     time_measure: str = "mean",  # mean, median, sum, max, min, stdev
     cost_measure: str = "mean",  # mean, median, sum, max, min, stdev
 ) -> Tuple[dict, dict, dict]:
-    start_activities = {}
-    end_activities = {}
+    start_activities = get_start_activities(log)
+    end_activities = get_end_activities(log)
     multi_perspective_dfg = get_multi_perspective_dfg(log)
 
     return multi_perspective_dfg, start_activities, end_activities
