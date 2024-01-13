@@ -8,6 +8,9 @@ from multi_perspective_dfg_viewer.activities import (
     get_end_activities,
 )
 
+from multi_perspective_dfg_viewer.dfg_parameters import DFGParameters
+from multi_perspective_dfg_viewer.dfg import DFG
+
 
 def discover_multi_perspective_dfg(
     log: pd.DataFrame,
@@ -23,6 +26,21 @@ def discover_multi_perspective_dfg(
     time_measure: str = "mean",  # mean, median, sum, max, min, stdev
     cost_measure: str = "mean",  # mean, median, sum, max, min, stdev
 ) -> Tuple[dict, dict, dict]:
+    dfg_parameters = DFGParameters(
+        case_id_key,
+        activity_key,
+        timestamp_key,
+        start_timestamp_key,
+        cost_key,
+        calculate_frequency,
+        calculate_time_performance,
+        calculate_cost_performance,
+        frequency_measure,
+        time_measure,
+        cost_measure,
+    )
+    dfg = DFG(log, dfg_parameters)
+
     start_activities = get_start_activities(log)
     end_activities = get_end_activities(log)
     multi_perspective_dfg = get_multi_perspective_dfg(log)
