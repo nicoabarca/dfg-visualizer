@@ -37,6 +37,3 @@ class DirectlyFollowsGraphParameters:
             raise ValueError(
                 "Valud values for cost statistic are mean, median, sum, max, min ,stdev"
             )
-
-
-DFGParameters = DirectlyFollowsGraphParameters
