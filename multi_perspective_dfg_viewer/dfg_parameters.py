@@ -9,33 +9,33 @@ class DirectlyFollowsGraphParameters:
     start_timestamp_key: str = "start_timestamp"
     cost_key: str = "cost:total"
     calculate_frequency: bool = True
-    calculate_time_performance: bool = True
-    calculate_cost_performance: bool = True
-    frequency_measure: str = (
+    calculate_time: bool = True
+    calculate_cost: bool = True
+    frequency_statistic: str = (
         "absolute-activity"  # absolute-case, relative-activity, relative-case
     )
-    time_measure: str = "mean"  # mean, median, sum, max, min, stdev
-    cost_measure: str = "mean"  # mean, median, sum, max, min, stdev
+    time_statistic: str = "mean"  # mean, median, sum, max, min, stdev
+    cost_statistic: str = "mean"  # mean, median, sum, max, min, stdev
 
     def __post_init__(self):
-        if self.frequency_measure not in {
+        if self.frequency_statistic not in {
             "absolute-activity",
             "absolute-case",
             "relative_activity",
             "relative-case",
         }:
             raise ValueError(
-                "Valid values for frequency measure are             absolute-activity, absolute-case,relative_activity,relative-case"
+                "Valid values for frequency statistic are             absolute-activity, absolute-case,relative_activity,relative-case"
             )
 
-        if self.time_measure not in {"mean", "median", "sum", "max", "min", "stdev"}:
+        if self.time_statistic not in {"mean", "median", "sum", "max", "min", "stdev"}:
             raise ValueError(
-                "Valud values for time measure are mean, median, sum, max, min ,stdev"
+                "Valud values for time statistic are mean, median, sum, max, min ,stdev"
             )
 
-        if self.cost_measure not in {"mean", "median", "sum", "max", "min", "stdev"}:
+        if self.cost_statistic not in {"mean", "median", "sum", "max", "min", "stdev"}:
             raise ValueError(
-                "Valud values for cost measure are mean, median, sum, max, min ,stdev"
+                "Valud values for cost statistic are mean, median, sum, max, min ,stdev"
             )
 
 

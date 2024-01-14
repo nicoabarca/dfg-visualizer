@@ -20,11 +20,11 @@ def discover_multi_perspective_dfg(
     start_timestamp_key: str = "start_timestamp",
     cost_key: str = "cost:total",
     calculate_frequency: bool = True,
-    calculate_time_performance: bool = True,
-    calculate_cost_performance: bool = True,
-    frequency_measure: str = "absolute-activity",  # absolute-case, relative-activity, relative-case
-    time_measure: str = "mean",  # mean, median, sum, max, min, stdev
-    cost_measure: str = "mean",  # mean, median, sum, max, min, stdev
+    calculate_time: bool = True,
+    calculate_cost: bool = True,
+    frequency_statistic: str = "absolute-activity",  # absolute-case, relative-activity, relative-case
+    time_statistic: str = "mean",  # mean, median, sum, max, min, stdev
+    cost_statistic: str = "mean",  # mean, median, sum, max, min, stdev
 ) -> Tuple[dict, dict, dict]:
     dfg_parameters = DFGParameters(
         case_id_key,
@@ -33,16 +33,19 @@ def discover_multi_perspective_dfg(
         start_timestamp_key,
         cost_key,
         calculate_frequency,
-        calculate_time_performance,
-        calculate_cost_performance,
-        frequency_measure,
-        time_measure,
-        cost_measure,
+        calculate_time,
+        calculate_cost,
+        frequency_statistic,
+        time_statistic,
+        cost_statistic,
     )
     dfg = DFG(log, dfg_parameters)
 
-    start_activities = get_start_activities(log)
-    end_activities = get_end_activities(log)
+    # start_activities = get_start_activities(log)
+    # end_activities = get_end_activities(log)
+    start_activities = {}
+    end_activities = {}
+
     multi_perspective_dfg = get_multi_perspective_dfg(log)
 
     return multi_perspective_dfg, start_activities, end_activities

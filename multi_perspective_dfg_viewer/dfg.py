@@ -16,22 +16,29 @@ class DirectlyFollowsGraph:
     def activities_factory(self):
         factory_dict = {}
         if self.parameters.calculate_frequency:
-            factory_dict["frequency"] = 0
-        if self.parameters.calculate_time_performance:
-            factory_dict["time"] = timedelta(0)
-        if self.parameters.calculate_cost_performance:
-            factory_dict["cost"] = 0
+            factory_dict["frequency"] = []
+        if self.parameters.calculate_time:
+            factory_dict["time"] = []
+        if self.parameters.calculate_cost:
+            factory_dict["cost"] = []
         return lambda: factory_dict
 
     def connections_factory(self):
         factory_dict = {}
         if self.parameters.calculate_frequency:
-            factory_dict["frequency"] = 0
-        if self.parameters.calculate_time_performance:
-            factory_dict["time"] = timedelta(0)
+            factory_dict["frequency"] = []
+        if self.parameters.calculate_time:
+            factory_dict["time"] = []
         return lambda: factory_dict
 
     def build(self):
+        grouped_by_case_id = self.log.groupby(
+            by=self.parameters.case_id_key, dropna=True, sort=False
+        )
+
+        for _, group_data in grouped_by_case_id:
+            group_data = group_data.sort_values(by=self.parameters.timestamp_key)
+
         pass
 
     def add_activity(self):
