@@ -1,8 +1,5 @@
 import pandas as pd
 from typing import Tuple
-from multi_perspective_dfg_viewer.get_multi_perspective_dfg import (
-    get_multi_perspective_dfg,
-)
 from multi_perspective_dfg_viewer.dfg_parameters import DirectlyFollowsGraphParameters
 from multi_perspective_dfg_viewer.dfg import DirectlyFollowsGraph
 
@@ -36,13 +33,9 @@ def discover_multi_perspective_dfg(
     )
     dfg = DirectlyFollowsGraph(log, dfg_parameters)
     dfg.build()
-    breakpoint()
 
-    # start_activities = get_start_activities(log)
-    # end_activities = get_end_activities(log)
-    start_activities = {}
-    end_activities = {}
-
-    multi_perspective_dfg = get_multi_perspective_dfg(log)
+    multi_perspective_dfg = dfg.get_graph()
+    start_activities = dfg.get_start_activities()
+    end_activities = dfg.get_end_activities()
 
     return multi_perspective_dfg, start_activities, end_activities
