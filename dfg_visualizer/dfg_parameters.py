@@ -11,11 +11,9 @@ class DirectlyFollowsGraphParameters:
     calculate_frequency: bool = True
     calculate_time: bool = True
     calculate_cost: bool = True
-    frequency_statistic: str = (
-        "absolute-activity"  # absolute-case, relative-activity, relative-case
-    )
-    time_statistic: str = "mean"  # mean, median, sum, max, min, stdev
-    cost_statistic: str = "mean"  # mean, median, sum, max, min, stdev
+    frequency_statistic: str = "absolute-activity"
+    time_statistic: str = "mean"
+    cost_statistic: str = "mean"
 
     def __post_init__(self):
         if self.frequency_statistic not in {

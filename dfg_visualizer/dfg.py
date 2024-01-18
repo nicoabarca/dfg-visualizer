@@ -1,16 +1,19 @@
 import numpy as np
 import pandas as pd
-from multi_perspective_dfg_viewer.dfg_parameters import DirectlyFollowsGraphParameters
+from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
 
 
 class DirectlyFollowsGraph:
     def __init__(self, log: pd.DataFrame, parameters: DirectlyFollowsGraphParameters):
         self.log = log
         self.parameters = parameters
-        self.start_activities = {}
-        self.end_activities = {}
+        self.start_activities = self.get_start_activities()
+        self.end_activities = self.get_end_activities()
         self.activities = {}
         self.connections = {}
+
+    def visualize(self):
+        pass
 
     def build(self):
         grouped_by_case_id = self.log.groupby(

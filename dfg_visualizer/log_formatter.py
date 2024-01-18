@@ -2,7 +2,7 @@ import pandas as pd
 
 
 # TODO: format log based on user column names
-def format_log(log: pd.DataFrame):
+def log_formatter(log: pd.DataFrame):
     log["Complete"] = pd.to_datetime(
         log["Complete"], utc=True, format="%Y-%m-%d %H:%M:%S"
     )
