@@ -34,7 +34,6 @@ def discover_multi_perspective_dfg(
     )
     dfg = DirectlyFollowsGraph(log, dfg_parameters)
     dfg.build()
-
     multi_perspective_dfg = dfg.get_graph()
     start_activities = dfg.get_start_activities()
     end_activities = dfg.get_end_activities()

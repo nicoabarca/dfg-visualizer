@@ -46,9 +46,6 @@ class DirectlyFollowsGraphVisualizer:
                 f"{activity.replace(' ', '_')}(\"{activity_string}\")\n"
             )
 
-    def add_start_connection(self):
-        self.diagram_string += f"start -.\"<span style='background-color: snow; color: royalblue;'>{list(self.start_activities.values())[0]}</span>\".- {list(self.start_activities.keys())[0].replace(' ', '_')}\n"
-
     def add_connections(self):
         self.add_start_connection()
         for connection, dimensions in self.dfg["connections"].items():
@@ -60,6 +57,9 @@ class DirectlyFollowsGraphVisualizer:
                 )
             self.diagram_string += f"{connection[0].replace(' ', '_')}-->|\"{connections_string}\"|{connection[1].replace(' ', '_')}\n"
         self.add_end_connection()
+
+    def add_start_connection(self):
+        self.diagram_string += f"start -.\"<span style='background-color: snow; color: royalblue;'>{list(self.start_activities.values())[0]}</span>\".- {list(self.start_activities.keys())[0].replace(' ', '_')}\n"
 
     def add_end_connection(self):
         self.diagram_string += f"{list(self.end_activities.keys())[0].replace(' ', '_')} -.\"<span style='background-color: snow; color: royalblue;'>{list(self.end_activities.values())[0]}</span>\".- complete\n"
