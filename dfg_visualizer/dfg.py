@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from datetime import timedelta
 from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
 
 
@@ -11,9 +12,6 @@ class DirectlyFollowsGraph:
         self.end_activities = self.get_end_activities()
         self.activities = {}
         self.connections = {}
-
-    def visualize(self):
-        pass
 
     def build(self):
         grouped_by_case_id = self.log.groupby(
@@ -47,7 +45,7 @@ class DirectlyFollowsGraph:
         if self.parameters.calculate_frequency:
             self.activities[name]["frequency"] += 1
         if self.parameters.calculate_time:
-            self.activities[name]["time"].append(time)
+            self.activities[name]["time"].append(time.seconds)
         if self.parameters.calculate_cost:
             self.activities[name]["cost"].append(cost)
 
@@ -69,7 +67,7 @@ class DirectlyFollowsGraph:
         if self.parameters.calculate_frequency:
             self.connections[name]["frequency"] += 1
         if self.parameters.calculate_time:
-            self.connections[name]["time"].append(time_between_activities)
+            self.connections[name]["time"].append(time_between_activities.seconds)
 
     def compute_dimensions_statistics(self):
         for activity_name, dimensions in self.activities.items():

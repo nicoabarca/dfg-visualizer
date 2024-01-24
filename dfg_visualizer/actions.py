@@ -1,7 +1,8 @@
 import pandas as pd
 from typing import Tuple
-from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
 from dfg_visualizer.dfg import DirectlyFollowsGraph
+from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
+from dfg_visualizer.dfg_visualizer import DirectlyFollowsGraphVisualizer
 
 
 def discover_multi_perspective_dfg(
@@ -42,24 +43,35 @@ def discover_multi_perspective_dfg(
 
 
 def get_multi_perspective_dfg_string(
-    multi_perspective_dfg: DirectlyFollowsGraph,
+    multi_perspective_dfg: dict,
     start_activities: dict,
     end_activities: dict,
     visualize_frequency: bool = True,
-    visualize_time_performance: bool = True,
-    visualize_cost_performance: bool = True,
+    visualize_time: bool = True,
+    visualize_cost: bool = True,
     rankdir: str = "LR",
 ):
-    return None
+    dfg_visualizer = DirectlyFollowsGraphVisualizer(
+        multi_perspective_dfg,
+        start_activities,
+        end_activities,
+        visualize_frequency,
+        visualize_time,
+        visualize_cost,
+        rankdir,
+    )
+    dfg_visualizer.build_string()
+    dfg_string = dfg_visualizer.get_string()
+    return dfg_string
 
 
 def view_multi_perspective_dfg(
-    multi_perspective_dfg: DirectlyFollowsGraph,
+    multi_perspective_dfg: dict,
     start_activities: dict,
     end_activities: dict,
     visualize_frequency: bool = True,
-    visualize_time_performance: bool = True,
-    visualize_cost_performance: bool = True,
+    visualize_time: bool = True,
+    visualize_cost: bool = True,
     format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
     rankdir: str = "LR",
 ):
@@ -71,13 +83,13 @@ def view_multi_perspective_dfg(
 
 
 def save_vis_multi_perspective_dfg(
-    multi_perspective_dfg: DirectlyFollowsGraph,
+    multi_perspective_dfg: dict,
     start_activities: dict,
     end_activities: dict,
     file_path: str,
     visualize_frequency: bool = True,
-    visualize_time_performance: bool = True,
-    visualize_cost_performance: bool = True,
+    visualize_time: bool = True,
+    visualize_cost: bool = True,
     format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
     rankdir: str = "LR",
 ):
