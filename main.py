@@ -23,9 +23,7 @@ event_log = dfg_visualizer.log_formatter(event_log)
     multi_perspective_dfg,
     start_activities,
     end_activities,
-) = dfg_visualizer.discover_multi_perspective_dfg(
-    event_log, frequency_statistic="relative-case"
-)
+) = dfg_visualizer.discover_multi_perspective_dfg(event_log)
 
 # TESTING
 dfg_string = dfg_visualizer.get_multi_perspective_dfg_string(

@@ -57,7 +57,7 @@ class DirectlyFollowsGraphBuilder:
             name, new_activity_dict(self.parameters)
         )
         if self.parameters.calculate_frequency:
-            activity["frequency"].append(1)
+            activity["frequency"] += 1
         if self.parameters.calculate_time:
             activity["time"].append(time.total_seconds())
         if self.parameters.calculate_cost:
@@ -82,7 +82,7 @@ class DirectlyFollowsGraphBuilder:
             name, new_connection_dict(self.parameters)
         )
         if self.parameters.calculate_frequency:
-            connection["frequency"].append(1)
+            connection["frequency"] += 1
         if self.parameters.calculate_time:
             connection["time"].append(time_between_activities.total_seconds())
 
@@ -95,31 +95,29 @@ class DirectlyFollowsGraphBuilder:
         for activity, dimensions in self.dfg.activities.items():
             for dimension, activity_data in dimensions.items():
                 dimension_statistic = statistics_mapping.get(dimension)
-                if dimension_statistic:
-                    self.dfg.activities[activity][
-                        dimension
-                    ] = self.statistic_function_handler(
-                        activity_data, dimension_statistic
-                    )
+                self.dfg.activities[activity][
+                    dimension
+                ] = self.statistic_function_handler(activity_data, dimension_statistic)
 
     def compute_connections_statistics(self):
         statistics_mapping = statistics_names_mapping(self.parameters)
         for connection, dimensions in self.dfg.connections.items():
             for dimension, connection_data in dimensions.items():
                 dimension_statistic = statistics_mapping.get(dimension)
-                if dimension_statistic:
-                    self.dfg.connections[connection][
-                        dimension
-                    ] = self.statistic_function_handler(
-                        connection_data, dimension_statistic
-                    )
+                self.dfg.connections[connection][
+                    dimension
+                ] = self.statistic_function_handler(
+                    connection_data, dimension_statistic
+                )
 
     def statistic_function_handler(self, data, dimension_statistic):
-        if dimension_statistic in [
+        if dimension_statistic not in [
+            "absolute-activity",
             "absolute-case",
             "relative-activity",
             "relative-case",
         ]:
-            total_cases = sum(self.dfg.start_activities.values())
-            return statistics_functions[dimension_statistic](data, total_cases)
-        return statistics_functions[dimension_statistic](data)
+            return statistics_functions[dimension_statistic](data)
+
+        total_cases = sum(self.dfg.start_activities.values())
+        return statistics_functions[dimension_statistic](data, total_cases)

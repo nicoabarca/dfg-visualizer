@@ -3,7 +3,7 @@ import numpy as np
 
 def new_activity_dict(dfg_params):
     return {
-        key: []
+        key: [] if key != "frequency" else 0
         for key, value in {
             "frequency": dfg_params.calculate_frequency,
             "time": dfg_params.calculate_time,
@@ -15,7 +15,7 @@ def new_activity_dict(dfg_params):
 
 def new_connection_dict(dfg_params):
     return {
-        key: []
+        key: [] if key != "frequency" else 0
         for key, value in {
             "frequency": dfg_params.calculate_frequency,
             "time": dfg_params.calculate_time,
@@ -24,22 +24,19 @@ def new_connection_dict(dfg_params):
     }
 
 
-def absolute_activity(data_list):
-    activity_frequency = np.sum(data_list)
+def absolute_activity(activity_frequency, total_cases):
     return activity_frequency
 
 
-def absolute_case(data_list, total_cases):
-    activity_frequency = np.sum(data_list)
+def absolute_case(activity_frequency, total_cases):
     return min(activity_frequency, total_cases)
 
 
-def relative_activity(data_list):  # TODO
+def relative_activity(activity_frequency, total_cases):  # TODO
     pass
 
 
-def relative_case(data_list, total_cases):
-    activity_frequency = np.sum(data_list)
+def relative_case(activity_frequency, total_cases):
     relative_percentage = min(1, activity_frequency / total_cases)
     return f"{relative_percentage:.2%}"
 
