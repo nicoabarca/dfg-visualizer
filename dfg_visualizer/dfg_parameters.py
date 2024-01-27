@@ -23,7 +23,7 @@ class DirectlyFollowsGraphParameters:
             "relative-case",
         }:
             raise ValueError(
-                "Valid values for frequency statistic are             absolute-activity, absolute-case,relative_activity,relative-case"
+                "Valid values for frequency statistic are absolute-activity, absolute-case,relative_activity,relative-case"
             )
 
         if self.time_statistic not in {"mean", "median", "sum", "max", "min", "stdev"}:

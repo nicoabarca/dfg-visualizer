@@ -1,4 +1,9 @@
-import numpy as np
+from dfg_visualizer.utils.builder import (
+    new_activity_dict,
+    new_connection_dict,
+    statistics_names_mapping,
+    statistics_functions,
+)
 
 
 class DirectlyFollowsGraphBuilder:
@@ -48,99 +53,59 @@ class DirectlyFollowsGraphBuilder:
         self.update_activity_data(activity_name, activity_time, activity_cost)
 
     def update_activity_data(self, name, time, cost):
-        if name not in self.dfg.activities.keys():
-            self.dfg.activities[name] = self.new_activity_dict()
+        activity = self.dfg.activities.setdefault(
+            name, new_activity_dict(self.parameters)
+        )
         if self.parameters.calculate_frequency:
-            self.dfg.activities[name]["frequency"] += 1
+            activity["frequency"].append(1)
         if self.parameters.calculate_time:
-            self.dfg.activities[name]["time"].append(time.total_seconds())
+            activity["time"].append(time.total_seconds())
         if self.parameters.calculate_cost:
-            self.dfg.activities[name]["cost"].append(cost)
+            activity["cost"].append(cost)
 
     def update_connections(self, prev_activity, actual_activity):
-        if prev_activity is not None:
-            connection_name = (
-                prev_activity[self.parameters.activity_key],
-                actual_activity[self.parameters.activity_key],
-            )
-            time_between_activities = (
-                actual_activity[self.parameters.start_timestamp_key]
-                - prev_activity[self.parameters.timestamp_key]
-            )
-            self.update_connection_data(connection_name, time_between_activities)
+        if prev_activity is None:
+            return
+
+        connection_name = (
+            prev_activity[self.parameters.activity_key],
+            actual_activity[self.parameters.activity_key],
+        )
+        time_between_activities = (
+            actual_activity[self.parameters.start_timestamp_key]
+            - prev_activity[self.parameters.timestamp_key]
+        )
+        self.update_connection_data(connection_name, time_between_activities)
 
     def update_connection_data(self, name, time_between_activities):
-        if name not in self.dfg.connections.keys():
-            self.dfg.connections[name] = self.new_connection_dict()
+        connection = self.dfg.connections.setdefault(
+            name, new_connection_dict(self.parameters)
+        )
         if self.parameters.calculate_frequency:
-            self.dfg.connections[name]["frequency"] += 1
+            connection["frequency"].append(1)
         if self.parameters.calculate_time:
-            self.dfg.connections[name]["time"].append(
-                time_between_activities.total_seconds()
-            )
+            connection["time"].append(time_between_activities.total_seconds())
 
     def compute_graph_dimensions_statistics(self):
-        for activity_name, dimensions in self.dfg.activities.items():
-            for dimension in dimensions.keys():
-                if dimension != "frequency":
-                    activity_dimension_data = self.dfg.activities[activity_name][
-                        dimension
-                    ]
-                    dimension_statistic = self.get_dimension_statistic(dimension)
-                    self.dfg.activities[activity_name][
-                        dimension
-                    ] = self.compute_statistic(
-                        activity_dimension_data, dimension_statistic
-                    )
-        for connection_name, dimensions in self.dfg.connections.items():
-            for dimension in dimensions.keys():
-                if dimension != "frequency":
-                    connection_dimension_data = self.dfg.connections[connection_name][
-                        dimension
-                    ]
-                    dimension_statistic = self.get_dimension_statistic(dimension)
-                    self.dfg.connections[connection_name][
-                        dimension
-                    ] = self.compute_statistic(
-                        connection_dimension_data, dimension_statistic
-                    )
+        self.compute_activities_statistics()
+        self.compute_connections_statistics()
 
-    def get_dimension_statistic(self, dimension):
-        if dimension == "frequency":
-            return self.parameters.frequency_statistic
-        if dimension == "time":
-            return self.parameters.time_statistic
-        if dimension == "cost":
-            return self.parameters.cost_statistic
+    def compute_activities_statistics(self):
+        statistics_mapping = statistics_names_mapping(self.parameters)
+        for activity, dimensions in self.dfg.activities.items():
+            for dimension, activity_data in dimensions.items():
+                dimension_statistic = statistics_mapping.get(dimension)
+                if dimension_statistic:
+                    self.dfg.activities[activity][dimension] = statistics_functions[
+                        dimension_statistic
+                    ](activity_data)
 
-    def compute_statistic(self, data_list, statistic):
-        if statistic == "mean":
-            return np.mean(data_list)
-        if statistic == "median":
-            return np.median(data_list)
-        if statistic == "sum":
-            return np.sum(data_list)
-        if statistic == "max":
-            return np.max(data_list)
-        if statistic == "min":
-            return np.min(data_list)
-        if statistic == "stdev":
-            return np.std(data_list)
-
-    def new_activity_dict(self):
-        new_activity_dict = {}
-        if self.parameters.calculate_frequency:
-            new_activity_dict["frequency"] = 0
-        if self.parameters.calculate_time:
-            new_activity_dict["time"] = []
-        if self.parameters.calculate_cost:
-            new_activity_dict["cost"] = []
-        return new_activity_dict
-
-    def new_connection_dict(self):
-        new_connection_dict = {}
-        if self.parameters.calculate_frequency:
-            new_connection_dict["frequency"] = 0
-        if self.parameters.calculate_time:
-            new_connection_dict["time"] = []
-        return new_connection_dict
+    def compute_connections_statistics(self):
+        statistics_mapping = statistics_names_mapping(self.parameters)
+        for connection, dimensions in self.dfg.connections.items():
+            for dimension, connection_data in dimensions.items():
+                dimension_statistic = statistics_mapping.get(dimension)
+                if dimension_statistic:
+                    self.dfg.connections[connection][dimension] = statistics_functions[
+                        dimension_statistic
+                    ](connection_data)
