@@ -1,1 +1,1 @@
-# multi-perspective-dfg-viewer
+# dfg-visualizer 

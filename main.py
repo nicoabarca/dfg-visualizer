@@ -13,7 +13,7 @@ def pretty_print_dict(dictionary, indent=0):
             print(" " * indent + f"{key}: {value}")
 
 
-event_log_path = os.path.join("data", "blasting_with_rework_event_log_10k.csv")
+event_log_path = os.path.join("data", "blasting_with_rework_event_log.csv")
 
 event_log = pd.read_csv(event_log_path, sep=";")
 
