@@ -29,23 +29,19 @@ def absolute_activity(data_list):
     return activity_frequency
 
 
-def absolute_case(data_list):
+def absolute_case(data_list, total_cases):
     activity_frequency = np.sum(data_list)
-    total_cases = len(data_list)  # BUG: this is wrong, it should be all cases max
-    print("absolute_case")
-    return activity_frequency if activity_frequency < total_cases else total_cases
+    return min(activity_frequency, total_cases)
 
 
 def relative_activity(data_list):  # TODO
     pass
 
 
-def relative_case(data_list):
+def relative_case(data_list, total_cases):
     activity_frequency = np.sum(data_list)
-    total_cases = len(data_list)  # BUG: this is wrong, it should be all cases max
-    print(total_cases)
-    relative_percentage = activity_frequency / total_cases
-    return "{:.2%}".format(relative_percentage)
+    relative_percentage = min(1, activity_frequency / total_cases)
+    return f"{relative_percentage:.2%}"
 
 
 def statistics_names_mapping(dfg_params):

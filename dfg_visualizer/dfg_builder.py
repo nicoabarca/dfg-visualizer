@@ -96,9 +96,11 @@ class DirectlyFollowsGraphBuilder:
             for dimension, activity_data in dimensions.items():
                 dimension_statistic = statistics_mapping.get(dimension)
                 if dimension_statistic:
-                    self.dfg.activities[activity][dimension] = statistics_functions[
-                        dimension_statistic
-                    ](activity_data)
+                    self.dfg.activities[activity][
+                        dimension
+                    ] = self.statistic_function_handler(
+                        activity_data, dimension_statistic
+                    )
 
     def compute_connections_statistics(self):
         statistics_mapping = statistics_names_mapping(self.parameters)
@@ -106,6 +108,18 @@ class DirectlyFollowsGraphBuilder:
             for dimension, connection_data in dimensions.items():
                 dimension_statistic = statistics_mapping.get(dimension)
                 if dimension_statistic:
-                    self.dfg.connections[connection][dimension] = statistics_functions[
-                        dimension_statistic
-                    ](connection_data)
+                    self.dfg.connections[connection][
+                        dimension
+                    ] = self.statistic_function_handler(
+                        connection_data, dimension_statistic
+                    )
+
+    def statistic_function_handler(self, data, dimension_statistic):
+        if dimension_statistic in [
+            "absolute-case",
+            "relative-activity",
+            "relative-case",
+        ]:
+            total_cases = sum(self.dfg.start_activities.values())
+            return statistics_functions[dimension_statistic](data, total_cases)
+        return statistics_functions[dimension_statistic](data)
