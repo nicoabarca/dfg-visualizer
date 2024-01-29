@@ -27,9 +27,11 @@ event_log = dfg_visualizer.log_formatter(event_log)
 
 # TESTING
 dfg_string = dfg_visualizer.get_multi_perspective_dfg_string(
-    multi_perspective_dfg, start_activities, end_activities, rankdir="TD"
+    multi_perspective_dfg,
+    start_activities,
+    end_activities,
+    rankdir="TD",
 )
 
 with open("dfg_string.txt", "w") as f:
     f.write(dfg_string)
-print(dfg_string)

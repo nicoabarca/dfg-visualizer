@@ -1,5 +1,15 @@
 import numpy as np
 
+DECIMALS_TO_USE = 2
+
+
+def statistics_names_mapping(dfg_params):
+    return {
+        key: getattr(dfg_params, f"{key}_statistic")
+        for key in ["frequency", "cost", "time"]
+        if getattr(dfg_params, f"calculate_{key}")
+    }
+
 
 def new_activity_dict(dfg_params):
     return {
@@ -29,7 +39,7 @@ def absolute_activity(activity_frequency, total_cases):
 
 
 def absolute_case(activity_frequency, total_cases):
-    return min(activity_frequency, total_cases)
+    return min_val(activity_frequency, total_cases)
 
 
 def relative_activity(activity_frequency, total_cases):  # TODO
@@ -37,16 +47,32 @@ def relative_activity(activity_frequency, total_cases):  # TODO
 
 
 def relative_case(activity_frequency, total_cases):
-    relative_percentage = min(1, activity_frequency / total_cases)
-    return f"{relative_percentage:.2%}"
+    relative_percentage = min(1, activity_frequency / total_cases) * 100
+    return round(relative_percentage, DECIMALS_TO_USE)
 
 
-def statistics_names_mapping(dfg_params):
-    return {
-        key: getattr(dfg_params, f"{key}_statistic")
-        for key in ["frequency", "cost", "time"]
-        if getattr(dfg_params, f"calculate_{key}")
-    }
+def mean_val(data):
+    return round(np.mean(data), DECIMALS_TO_USE)
+
+
+def median_val(data):
+    return round(np.median(data), DECIMALS_TO_USE)
+
+
+def sum_val(data):
+    return round(np.sum(data), DECIMALS_TO_USE)
+
+
+def max_val(data):
+    return round(np.max(data), DECIMALS_TO_USE)
+
+
+def min_val(data):
+    return round(np.min(data), DECIMALS_TO_USE)
+
+
+def stdev_val(data):
+    return round(np.std(data), DECIMALS_TO_USE)
 
 
 statistics_functions = {
@@ -54,10 +80,10 @@ statistics_functions = {
     "absolute-case": absolute_case,
     "relative-activity": relative_activity,
     "relative-case": relative_case,
-    "mean": np.mean,
-    "median": np.median,
-    "sum": np.sum,
-    "max": np.max,
-    "min": np.min,
-    "stdev": np.std,
+    "mean": mean_val,
+    "median": median_val,
+    "sum": sum_val,
+    "max": max_val,
+    "min": min_val,
+    "stdev": stdev_val,
 }

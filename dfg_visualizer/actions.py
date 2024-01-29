@@ -33,7 +33,6 @@ def discover_multi_perspective_dfg(
         cost_statistic,
     )
     dfg = DirectlyFollowsGraph(log, dfg_parameters)
-    dfg.build()
     multi_perspective_dfg = dfg.get_graph()
     start_activities = dfg.get_start_activities()
     end_activities = dfg.get_end_activities()
@@ -47,8 +46,10 @@ def get_multi_perspective_dfg_string(
     end_activities: dict,
     visualize_frequency: bool = True,
     visualize_time: bool = True,
+    time_unit: str = "seconds",  # seconds, minutes, hours
     visualize_cost: bool = True,
-    rankdir: str = "LR",
+    cost_currency: str = "USD",  # currency
+    rankdir: str = "TD",
 ):
     dfg_visualizer = DirectlyFollowsGraphVisualizer(
         multi_perspective_dfg,
@@ -56,10 +57,11 @@ def get_multi_perspective_dfg_string(
         end_activities,
         visualize_frequency,
         visualize_time,
+        time_unit,
         visualize_cost,
+        cost_currency,
         rankdir,
     )
-    dfg_visualizer.build_string()
     dfg_string = dfg_visualizer.get_string()
     return dfg_string
 
@@ -72,10 +74,16 @@ def view_multi_perspective_dfg(
     visualize_time: bool = True,
     visualize_cost: bool = True,
     format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
-    rankdir: str = "LR",
+    rankdir: str = "TD",
 ):
     string = get_multi_perspective_dfg_string(
-        multi_perspective_dfg, start_activities, end_activities, rankdir
+        multi_perspective_dfg=multi_perspective_dfg,
+        start_activities=start_activities,
+        end_activities=end_activities,
+        visualize_frequency=visualize_frequency,
+        visualize_time=visualize_time,
+        visualize_cost=visualize_cost,
+        rankdir=rankdir,
     )
 
     return string
@@ -90,10 +98,16 @@ def save_vis_multi_perspective_dfg(
     visualize_time: bool = True,
     visualize_cost: bool = True,
     format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
-    rankdir: str = "LR",
+    rankdir: str = "TD",
 ):
     string = get_multi_perspective_dfg_string(
-        multi_perspective_dfg, start_activities, end_activities, rankdir
+        multi_perspective_dfg=multi_perspective_dfg,
+        start_activities=start_activities,
+        end_activities=end_activities,
+        visualize_frequency=visualize_frequency,
+        visualize_time=visualize_time,
+        visualize_cost=visualize_cost,
+        rankdir=rankdir,
     )
 
     # Guardar diagrama
