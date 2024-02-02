@@ -1,6 +1,6 @@
 from dfg_visualizer.utils.visualizer import (
     get_dimensions_min_and_max,
-    hsl_interpolation_color,
+    hsl_color,
     text_color,
     format_time,
     link_width,
@@ -15,9 +15,8 @@ class DirectlyFollowsGraphVisualizer:
         end_activities: dict,
         visualize_frequency: bool = True,
         visualize_time: bool = True,
-        time_unit: str = "seconds",  # seconds, minutes, hours
         visualize_cost: bool = True,
-        cost_currency: str = "USD",  # currency
+        cost_currency: str = "USD",
         rankdir: str = "TD",
     ):
         self.dfg = dfg
@@ -25,7 +24,6 @@ class DirectlyFollowsGraphVisualizer:
         self.end_activities = end_activities
         self.visualize_frequency = visualize_frequency
         self.visualize_time = visualize_time
-        self.time_unit = time_unit
         self.visualize_cost = visualize_cost
         self.cost_currency = cost_currency
         self.rankdir = rankdir
@@ -43,7 +41,6 @@ class DirectlyFollowsGraphVisualizer:
         self.add_connections()
         self.add_class_definitions()
         self.add_link_styles()
-        # TODO: add links styles
 
     def add_titles(self):
         self.diagram_string += f"flowchart {self.rankdir}\n"
@@ -52,15 +49,17 @@ class DirectlyFollowsGraphVisualizer:
 
     def add_activities(self):
         for activity, dimensions in self.dfg["activities"].items():
-            activity_string = ""
+            activity_string = "<div style='border-radius: 7px; border: 1px solid black; overflow:hidden'>{}</div>"
+            activity_dimensions_string = ""
             for dimension in dimensions:
                 dimension_measure = self.dfg["activities"][activity][dimension]
-                color = hsl_interpolation_color(
+                color = hsl_color(
                     dimension_measure, dimension, self.dimensions_min_and_max[dimension]
                 )
-                activity_string += self.build_activity_string(
+                activity_dimensions_string += self.activity_dimension_string(
                     activity, dimension, dimension_measure, color
                 )
+            activity_string = activity_string.format(activity_dimensions_string)
 
             self.diagram_string += (
                 f"{activity.replace(' ', '_')}(\"{activity_string}\")\n"
@@ -72,7 +71,7 @@ class DirectlyFollowsGraphVisualizer:
             connections_string = ""
             for dimension in dimensions:
                 dimension_measure = self.dfg["connections"][connection][dimension]
-                color = hsl_interpolation_color(
+                color = hsl_color(
                     dimension_measure, dimension, self.dimensions_min_and_max[dimension]
                 )
                 connections_string += self.build_connection_string(
@@ -89,7 +88,7 @@ class DirectlyFollowsGraphVisualizer:
     def add_start_connections(self):
         start_connections_string = ""
         for activity, frequency in self.start_activities.items():
-            color = hsl_interpolation_color(
+            color = hsl_color(
                 frequency, "frequency", self.dimensions_min_and_max["frequency"]
             )
             connection_string = f"start -.\"<span style='background-color: snow; color: {color};'>{frequency}</span>\".- {activity.replace(' ', '_')}\n"
@@ -102,7 +101,7 @@ class DirectlyFollowsGraphVisualizer:
     def add_end_connections(self):
         end_connections_string = ""
         for activity, frequency in self.end_activities.items():
-            color = hsl_interpolation_color(
+            color = hsl_color(
                 frequency, "frequency", self.dimensions_min_and_max["frequency"]
             )
             connections_string = f"{activity.replace(' ', '_')} -.\"<span style='background-color: snow; color: {color};'>{frequency}</span>\".- complete\n"
@@ -129,15 +128,18 @@ class DirectlyFollowsGraphVisualizer:
         self.diagram_string += "classDef completeClass fill:red\n"
 
     def add_link_styles(self):
-        self.diagram_string += self.link_styles_string
+        if self.visualize_frequency:
+            self.diagram_string += self.link_styles_string
 
-    def build_activity_string(self, activity, dimension, dimension_measure, bg_color):
-        if dimension == "frequency" and self.visualize_frequency:
-            return f"<div style='background-color: {bg_color};  border: 1px solid black; color: {text_color(bg_color)}; '>&nbsp;{activity} ({dimension_measure})&nbsp;</div>"
+    def activity_dimension_string(
+        self, activity, dimension, dimension_measure, bg_color
+    ):
+        if dimension == "frequency":
+            return f"<div style='background-color: {bg_color}; color: {text_color(bg_color)}; '>&nbsp;{activity} {self.frequency_measure(dimension_measure)}&nbsp;</div>"
         if dimension == "time" and self.visualize_time:
-            return f"<div style='background-color: {bg_color}; border: 1px solid black; color: {text_color(bg_color)};'>&nbsp;{format_time(dimension_measure)}&nbsp;</div>"
+            return f"<div style='background-color: {bg_color}; color: {text_color(bg_color)};'>&nbsp;{format_time(dimension_measure)}&nbsp;</div>"
         if dimension == "cost" and self.visualize_cost:
-            return f"<div style='background-color: {bg_color}; border: 1px solid black;  color: {text_color(bg_color)};'>&nbsp;{dimension_measure} {self.cost_currency}&nbsp;</div>"
+            return f"<div style='background-color: {bg_color}; color: {text_color(bg_color)};'>&nbsp;{dimension_measure} {self.cost_currency}&nbsp;</div>"
         return ""
 
     def build_connection_string(self, dimension, dimension_measure, color):
@@ -145,6 +147,11 @@ class DirectlyFollowsGraphVisualizer:
             return f"<span style='background-color: snow; color: {color};'>{dimension_measure}</span></br>"
         if dimension == "time" and self.visualize_time:
             return f"<span style='background-color: snow; color: {color};'>{format_time(dimension_measure)}</span></br>"
+        return ""
+
+    def frequency_measure(self, dimension_measure):
+        if self.visualize_frequency:
+            return f"({dimension_measure})"
         return ""
 
     def get_string(self):

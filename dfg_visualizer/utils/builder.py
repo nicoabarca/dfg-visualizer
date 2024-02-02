@@ -39,10 +39,10 @@ def absolute_activity(activity_frequency, total_cases):
 
 
 def absolute_case(activity_frequency, total_cases):
-    return min_val(activity_frequency, total_cases)
+    return min(activity_frequency, total_cases)
 
 
-def relative_activity(activity_frequency, total_cases):  # TODO
+def relative_activity(activity_frequency, total_activities):  # TODO
     pass
 
 

@@ -44,38 +44,29 @@ def get_dimensions_min_and_max(activities, connections):
     }
 
 
-def hsl_interpolation_color(val, dimension, dimension_scale):
+def hsl_color(val, dimension, dimension_scale):
     hue = 0
     saturation = 0
-    l_scale = (75, 35)
-    if dimension == "frequency":
+    lightness_scale = (75, 35)
+    if dimension == "frequency":  # blue
         hue = 225
         saturation = 100
-    elif dimension == "time":
+    elif dimension == "time":  # red
         hue = 0
         saturation = 100
-    elif dimension == "cost":
+    elif dimension == "cost":  # green
         hue = 120
         saturation = 60
 
-    normalized_value = (val - dimension_scale[0]) / (
-        dimension_scale[1] - dimension_scale[0]
-    )
-
-    lightness = l_scale[0] + normalized_value * (l_scale[1] - l_scale[0])
+    lightness = interpolated_value(val, dimension_scale, lightness_scale)
 
     return f"hsl({hue},{saturation}%,{lightness}%)"
 
 
 def link_width(val, dimension_scale):
-    width_scale = (0.1, 5)
-    normalized_value = (val - dimension_scale[0]) / (
-        dimension_scale[1] - dimension_scale[0]
-    )
-
-    width = width_scale[0] + normalized_value * (width_scale[1] - width_scale[0])
-
-    return width
+    width_scale = (0.1, 8)
+    link_width = interpolated_value(val, dimension_scale, width_scale)
+    return link_width
 
 
 def text_color(background_color):
@@ -85,8 +76,10 @@ def text_color(background_color):
         .replace("%", "")
     )
 
-    threshold = 55
-    if float(background_lightness) > threshold:
+    blue_threshold = 55
+    red_threshold = 0
+    green_threshold = 0
+    if float(background_lightness) > blue_threshold:
         return "black"
     else:
         return "white"
@@ -104,3 +97,14 @@ def format_time(seconds):
         return f"{minutes} min, {remaining_seconds} seg"
     else:
         return f"{remaining_seconds} seg"
+
+
+def lightness_threshold_based_on_color(color):
+    pass
+
+
+def interpolated_value(value, from_scale, to_scale):
+    value = max(min(value, from_scale[1]), from_scale[0])
+    normalized_value = (value - from_scale[0]) / (from_scale[1] - from_scale[0])
+    interpolated_value = to_scale[0] + normalized_value * (to_scale[1] - to_scale[0])
+    return interpolated_value

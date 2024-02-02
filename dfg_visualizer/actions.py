@@ -46,7 +46,6 @@ def get_multi_perspective_dfg_string(
     end_activities: dict,
     visualize_frequency: bool = True,
     visualize_time: bool = True,
-    time_unit: str = "seconds",  # seconds, minutes, hours
     visualize_cost: bool = True,
     cost_currency: str = "USD",  # currency
     rankdir: str = "TD",
@@ -57,7 +56,6 @@ def get_multi_perspective_dfg_string(
         end_activities,
         visualize_frequency,
         visualize_time,
-        time_unit,
         visualize_cost,
         cost_currency,
         rankdir,
