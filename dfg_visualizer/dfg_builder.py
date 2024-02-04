@@ -13,9 +13,7 @@ class DirectlyFollowsGraphBuilder:
         self.parameters = parameters
 
     def start(self):
-        grouped_cases_by_id = self.log.groupby(
-            self.parameters.case_id_key, dropna=True, sort=False
-        )
+        grouped_cases_by_id = self.log.groupby(self.parameters.case_id_key, dropna=True, sort=False)
         self.create_graph(grouped_cases_by_id)
 
     def create_graph(self, grouped_cases_by_id):
@@ -46,16 +44,13 @@ class DirectlyFollowsGraphBuilder:
     def update_activities(self, activity):
         activity_name = activity[self.parameters.activity_key]
         activity_time = (
-            activity[self.parameters.timestamp_key]
-            - activity[self.parameters.start_timestamp_key]
+            activity[self.parameters.timestamp_key] - activity[self.parameters.start_timestamp_key]
         )
         activity_cost = activity[self.parameters.cost_key]
         self.update_activity_data(activity_name, activity_time, activity_cost)
 
     def update_activity_data(self, name, time, cost):
-        activity = self.dfg.activities.setdefault(
-            name, new_activity_dict(self.parameters)
-        )
+        activity = self.dfg.activities.setdefault(name, new_activity_dict(self.parameters))
         if self.parameters.calculate_frequency:
             activity["frequency"] += 1
         if self.parameters.calculate_time:
@@ -78,9 +73,7 @@ class DirectlyFollowsGraphBuilder:
         self.update_connection_data(connection_name, time_between_activities)
 
     def update_connection_data(self, name, time_between_activities):
-        connection = self.dfg.connections.setdefault(
-            name, new_connection_dict(self.parameters)
-        )
+        connection = self.dfg.connections.setdefault(name, new_connection_dict(self.parameters))
         if self.parameters.calculate_frequency:
             connection["frequency"] += 1
         if self.parameters.calculate_time:
@@ -95,18 +88,16 @@ class DirectlyFollowsGraphBuilder:
         for activity, dimensions in self.dfg.activities.items():
             for dimension, activity_data in dimensions.items():
                 dimension_statistic = statistics_mapping.get(dimension)
-                self.dfg.activities[activity][
-                    dimension
-                ] = self.statistic_function_handler(activity_data, dimension_statistic)
+                self.dfg.activities[activity][dimension] = self.statistic_function_handler(
+                    activity_data, dimension_statistic
+                )
 
     def compute_connections_statistics(self):
         statistics_mapping = statistics_names_mapping(self.parameters)
         for connection, dimensions in self.dfg.connections.items():
             for dimension, connection_data in dimensions.items():
                 dimension_statistic = statistics_mapping.get(dimension)
-                self.dfg.connections[connection][
-                    dimension
-                ] = self.statistic_function_handler(
+                self.dfg.connections[connection][dimension] = self.statistic_function_handler(
                     connection_data, dimension_statistic
                 )
 

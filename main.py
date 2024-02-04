@@ -31,17 +31,16 @@ event_log = dfg_visualizer.log_formatter(event_log)
     calculate_cost=True,
     calculate_frequency=True,
     calculate_time=True,
-    frequency_statistic="relative-case",
+    frequency_statistic="absolute-activity",
     time_statistic="median",
     cost_statistic="max",
 )
 
-# TESTING
 dfg_string = dfg_visualizer.get_multi_perspective_dfg_string(
     multi_perspective_dfg,
     start_activities,
     end_activities,
-    visualize_frequency=False,
+    visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
     cost_currency="USD",

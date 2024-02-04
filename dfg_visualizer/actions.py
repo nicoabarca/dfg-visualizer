@@ -47,7 +47,7 @@ def get_multi_perspective_dfg_string(
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
-    cost_currency: str = "USD",  # currency
+    cost_currency: str = "",
     rankdir: str = "TD",
 ):
     dfg_visualizer = DirectlyFollowsGraphVisualizer(
