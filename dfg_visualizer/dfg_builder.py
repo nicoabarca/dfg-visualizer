@@ -102,13 +102,13 @@ class DirectlyFollowsGraphBuilder:
                 )
 
     def statistic_function_handler(self, data, dimension_statistic):
-        if dimension_statistic not in [
-            "absolute-activity",
-            "absolute-case",
-            "relative-activity",
-            "relative-case",
-        ]:
-            return statistics_functions[dimension_statistic](data)
+        if dimension_statistic in ["absolute-case", "relative-case"]:
+            total_cases = sum(self.dfg.start_activities.values())
+            return statistics_functions[dimension_statistic](data, total_cases)
 
-        total_cases = sum(self.dfg.start_activities.values())
-        return statistics_functions[dimension_statistic](data, total_cases)
+        elif dimension_statistic == "relative-activity":
+            total_activities = sum(d["frequency"] for d in self.dfg.activities.values())
+            return statistics_functions[dimension_statistic](data, total_activities)
+
+        else:
+            return statistics_functions[dimension_statistic](data)

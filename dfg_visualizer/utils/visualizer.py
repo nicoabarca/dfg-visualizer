@@ -1,18 +1,18 @@
 def get_dimensions_min_and_max(activities, connections):
-    min_cost_in_activities = min(activity["cost"] for activity in activities.values())
-    max_cost_in_activities = max(activity["cost"] for activity in activities.values())
+    min_cost_in_activities = min((activity["cost"] for activity in activities.values()))
+    max_cost_in_activities = max((activity["cost"] for activity in activities.values()))
 
-    min_time_in_activities = min(activity["time"] for activity in activities.values())
-    max_time_in_activities = max(activity["time"] for activity in activities.values())
+    min_time_in_activities = min((activity["time"] for activity in activities.values()))
+    max_time_in_activities = max((activity["time"] for activity in activities.values()))
 
-    min_freq_in_activities = min(activity["frequency"] for activity in activities.values())
-    max_freq_in_activities = max(activity["frequency"] for activity in activities.values())
+    min_freq_in_activities = min((activity["frequency"] for activity in activities.values()))
+    max_freq_in_activities = max((activity["frequency"] for activity in activities.values()))
 
-    min_freq_in_connections = min(connection["frequency"] for connection in connections.values())
-    max_freq_in_connections = max(connection["frequency"] for connection in connections.values())
+    min_freq_in_connections = min((connection["frequency"] for connection in connections.values()))
+    max_freq_in_connections = max((connection["frequency"] for connection in connections.values()))
 
-    min_time_in_connections = min(connection["time"] for connection in connections.values())
-    max_time_in_connections = max(connection["time"] for connection in connections.values())
+    min_time_in_connections = min((connection["time"] for connection in connections.values()))
+    max_time_in_connections = max((connection["time"] for connection in connections.values()))
 
     min_cost, max_cost = min_cost_in_activities, max_cost_in_activities
     min_time, max_time = (

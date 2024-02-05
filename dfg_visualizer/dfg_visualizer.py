@@ -116,9 +116,7 @@ class DirectlyFollowsGraphVisualizer:
 
     def activity_dimension_string(self, activity, dimension, dimension_measure):
         color = hsl_color(dimension_measure, dimension, self.dimensions_min_and_max[dimension])
-        html_string = (
-            "<div style='background-color: {}; color: white; padding: 5px;'>&nbsp;{}&nbsp;</div>"
-        )
+        html_string = "<div style='background-color: {}; color: white; padding: 5px; border-bottom: 1px solid black;'>&nbsp;{}&nbsp;</div>"
         content = None
         if dimension == "frequency":
             content = f"{activity} {self.frequency_measure(dimension_measure)}"

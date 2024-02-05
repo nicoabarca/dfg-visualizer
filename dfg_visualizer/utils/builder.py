@@ -34,20 +34,21 @@ def new_connection_dict(dfg_params):
     }
 
 
-def absolute_activity(activity_frequency, total_cases):
+def absolute_activity(activity_frequency):
     return activity_frequency
 
 
-def absolute_case(activity_frequency, total_cases):
-    return min(activity_frequency, total_cases)
+def absolute_case(activity_frequency, sum_of_cases):
+    return min(activity_frequency, sum_of_cases)
 
 
-def relative_activity(activity_frequency, total_activities):  # TODO
-    pass
+def relative_activity(activity_frequency, sum_of_cases):
+    relative_percentage = min(1, activity_frequency / sum_of_cases) * 100
+    return round(relative_percentage, DECIMALS_TO_USE)
 
 
-def relative_case(activity_frequency, total_cases):
-    relative_percentage = min(1, activity_frequency / total_cases) * 100
+def relative_case(activity_frequency, sum_of_cases):
+    relative_percentage = min(1, activity_frequency / sum_of_cases) * 100
     return round(relative_percentage, DECIMALS_TO_USE)
 
 
