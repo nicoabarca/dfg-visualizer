@@ -31,7 +31,7 @@ def get_dimensions_min_and_max(activities, connections):
     }
 
 
-def hsl_color(val, dimension, dimension_scale):
+def hsl_color(measure, dimension, dimension_scale):
     hue = 0
     saturation = 0
     lightness_scale = (75, 35)
@@ -45,14 +45,14 @@ def hsl_color(val, dimension, dimension_scale):
         hue = 120
         saturation = 60
 
-    lightness = round(interpolated_value(val, dimension_scale, lightness_scale), 2)
+    lightness = round(interpolated_value(measure, dimension_scale, lightness_scale), 2)
 
     return f"hsl({hue},{saturation}%,{lightness}%)"
 
 
-def link_width(val, dimension_scale):
+def link_width(measure, dimension_scale):
     width_scale = (0.1, 8)
-    link_width = round(interpolated_value(val, dimension_scale, width_scale), 2)
+    link_width = round(interpolated_value(measure, dimension_scale, width_scale), 2)
     return link_width
 
 
@@ -72,10 +72,10 @@ def format_time(seconds):
         return "instant"
 
 
-def interpolated_value(value, from_scale, to_scale):
-    value = max(min(value, from_scale[1]), from_scale[0])
+def interpolated_value(measure, from_scale, to_scale):
+    measure = max(min(measure, from_scale[1]), from_scale[0])
     denominator = max(1, (from_scale[1] - from_scale[0]))
-    normalized_value = (value - from_scale[0]) / denominator
+    normalized_value = (measure - from_scale[0]) / denominator
     interpolated_value = to_scale[0] + normalized_value * (to_scale[1] - to_scale[0])
     return interpolated_value
 

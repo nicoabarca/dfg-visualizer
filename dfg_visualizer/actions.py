@@ -3,6 +3,7 @@ from typing import Tuple
 from dfg_visualizer.dfg import DirectlyFollowsGraph
 from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
 from dfg_visualizer.dfg_visualizer import DirectlyFollowsGraphVisualizer
+from dfg_visualizer.diagrammers.graphviz import GraphVizDiagrammer
 
 
 def discover_multi_perspective_dfg(
@@ -50,7 +51,7 @@ def get_multi_perspective_dfg_string(
     cost_currency: str = "",
     rankdir: str = "TD",
 ):
-    dfg_visualizer = DirectlyFollowsGraphVisualizer(
+    diagrammer = GraphVizDiagrammer(
         multi_perspective_dfg,
         start_activities,
         end_activities,
@@ -60,8 +61,9 @@ def get_multi_perspective_dfg_string(
         cost_currency,
         rankdir,
     )
-    dfg_string = dfg_visualizer.get_string()
-    return dfg_string
+    diagrammer.build_diagram()
+    diagram_string = diagrammer.get_diagram_string()
+    return diagram_string
 
 
 def view_multi_perspective_dfg(

@@ -17,7 +17,7 @@ class DirectlyFollowsGraphVisualizer:
         visualize_time: bool = True,
         visualize_cost: bool = True,
         cost_currency: str = "",
-        rankdir: str = "TD",
+        rankdir: str = "TB",
     ):
         self.dfg = dfg
         self.start_activities = start_activities
@@ -59,7 +59,6 @@ class DirectlyFollowsGraphVisualizer:
                 )
             activity_string = activity_string.format(activity_dimensions_string)
 
-            # self.diagram_string += f"{activity.replace(' ', '_')}(\"{activity_string}\")\n"
             self.diagram_string += f'{self.activities_id[activity]}("{activity_string}")\n'
 
     def add_connections(self):
