@@ -1,6 +1,8 @@
 import pandas as pd
 import tempfile
 import shutil
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from typing import Tuple
 from graphviz import Source
 from dfg_visualizer.dfg import DirectlyFollowsGraph
@@ -37,6 +39,7 @@ def discover_multi_perspective_dfg(
         cost_statistic,
     )
     dfg = DirectlyFollowsGraph(log, dfg_parameters)
+    dfg.build()
     multi_perspective_dfg = dfg.get_graph()
     start_activities = dfg.get_start_activities()
     end_activities = dfg.get_end_activities()
@@ -75,32 +78,6 @@ def view_multi_perspective_dfg(
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
-    format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
-    rankdir: str = "TD",
-):
-    # NOTE: This would be use for interactive Python Environments like Jupyter Notebooks or Google Colabs
-    string = get_multi_perspective_dfg_string(
-        multi_perspective_dfg=multi_perspective_dfg,
-        start_activities=start_activities,
-        end_activities=end_activities,
-        visualize_frequency=visualize_frequency,
-        visualize_time=visualize_time,
-        visualize_cost=visualize_cost,
-        rankdir=rankdir,
-    )
-
-    return string
-
-
-def save_vis_multi_perspective_dfg(
-    multi_perspective_dfg: dict,
-    start_activities: dict,
-    end_activities: dict,
-    file_path: str,
-    visualize_frequency: bool = True,
-    visualize_time: bool = True,
-    visualize_cost: bool = True,
-    format: str = "png",
     rankdir: str = "TD",
 ):
     dfg_string = get_multi_perspective_dfg_string(
@@ -112,10 +89,48 @@ def save_vis_multi_perspective_dfg(
         visualize_cost=visualize_cost,
         rankdir=rankdir,
     )
-    file_name = tempfile.NamedTemporaryFile(suffix=".gv")
-    file_name.close()
-    src = Source(dfg_string, file_name.name, format=format)
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".gv")
+    tmp_file.close()
+    src = Source(dfg_string, tmp_file.name, format="png")
 
     render = src.render(cleanup=True)
-    shutil.copyfile(render, file_name.name)
+    shutil.copyfile(render, tmp_file.name)
+
+    img = mpimg.imread(tmp_file.name)
+    plt.axis("off")
+    plt.tight_layout(pad=0, w_pad=0, h_pad=0)
+    plt.imshow(img)
+    plt.show()
+
+    return dfg_string
+
+
+def save_vis_multi_perspective_dfg(
+    multi_perspective_dfg: dict,
+    start_activities: dict,
+    end_activities: dict,
+    file_path: str,
+    visualize_frequency: bool = True,
+    visualize_time: bool = True,
+    visualize_cost: bool = True,
+    cost_currency: str = "",
+    format: str = "png",
+    rankdir: str = "TD",
+):
+    dfg_string = get_multi_perspective_dfg_string(
+        multi_perspective_dfg=multi_perspective_dfg,
+        start_activities=start_activities,
+        end_activities=end_activities,
+        visualize_frequency=visualize_frequency,
+        visualize_time=visualize_time,
+        visualize_cost=visualize_cost,
+        cost_currency=cost_currency,
+        rankdir=rankdir,
+    )
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".gv")
+    tmp_file.close()
+    src = Source(dfg_string, tmp_file.name, format=format)
+
+    render = src.render(cleanup=True)
     shutil.copyfile(render, f"{file_path}.{format}")

@@ -63,10 +63,13 @@ def interpolated_value(measure, from_scale, to_scale):
 
 def format_time(seconds):
     seconds = int(seconds)
+    days = seconds // 86400
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
     remaining_seconds = seconds % 60
 
+    if days > 0:
+        return f"{days} days {hours} hr {minutes} min"
     if hours > 0:
         return f"{hours} hr {minutes} min {remaining_seconds} seg"
     elif minutes > 0:

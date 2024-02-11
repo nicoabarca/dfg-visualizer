@@ -11,16 +11,9 @@ class DirectlyFollowsGraph:
         self.end_activities = {}
         self.activities = {}
         self.connections = {}
-        self.build()
 
     def build(self):
         DirectlyFollowsGraphBuilder(self, self.log, self.parameters).start()
-
-    def visualize(self):
-        pass
-
-    def save(self):
-        pass
 
     def get_graph(self):
         return {"activities": self.activities, "connections": self.connections}
