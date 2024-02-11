@@ -30,10 +30,18 @@ def ids_mapping(activities):
 
 def hsv_color(measure, dimension, dimension_scale):
     hue, saturation = hue_and_saturation_by_dimension(dimension)
-    value_scale = (75, 35)
+    value_scale = (80, 45)
     value = round(interpolated_value(measure, dimension_scale, value_scale), 3)
 
     return f"{round(hue / 360, 3)} {round(saturation / 100, 3)} {round(value / 100, 3)}"
+
+
+def hsl_color(measure, dimension, dimension_scale):
+    hue, saturation = hue_and_saturation_by_dimension(dimension)
+    lightness_scale = (75, 35)
+    lightness = round(interpolated_value(measure, dimension_scale, lightness_scale), 2)
+
+    return f"hsl({hue},{saturation}%,{lightness}%)"
 
 
 def hue_and_saturation_by_dimension(dimension):

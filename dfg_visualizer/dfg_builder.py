@@ -18,10 +18,8 @@ class DirectlyFollowsGraphBuilder:
 
     def create_graph(self, grouped_cases_by_id):
         self.get_start_and_end_activities(grouped_cases_by_id)
-
         for _, group_data in grouped_cases_by_id:
             self.update_graph(group_data)
-
         self.compute_graph_dimensions_statistics()
 
     def get_start_and_end_activities(self, grouped_cases_by_id):
@@ -106,13 +104,13 @@ class DirectlyFollowsGraphBuilder:
                 )
 
     def statistic_function_handler(self, data, dimension_statistic):
+        value = None
         if dimension_statistic in ["absolute-case", "relative-case"]:
             total_cases = sum(self.dfg.start_activities.values())
-            return statistics_functions[dimension_statistic](data, total_cases)
-
+            value = statistics_functions[dimension_statistic](data, total_cases)
         elif dimension_statistic == "relative-activity":
             total_activities = sum(d["frequency"] for d in self.dfg.activities.values())
-            return statistics_functions[dimension_statistic](data, total_activities)
-
+            value = statistics_functions[dimension_statistic](data, total_activities)
         else:
-            return statistics_functions[dimension_statistic](data)
+            value = statistics_functions[dimension_statistic](data)
+        return value

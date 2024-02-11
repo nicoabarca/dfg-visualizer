@@ -1,9 +1,12 @@
 import pandas as pd
+import tempfile
+import shutil
 from typing import Tuple
+from graphviz import Source
 from dfg_visualizer.dfg import DirectlyFollowsGraph
 from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
-from dfg_visualizer.dfg_visualizer import DirectlyFollowsGraphVisualizer
 from dfg_visualizer.diagrammers.graphviz import GraphVizDiagrammer
+from dfg_visualizer.diagrammers.mermaid import MermaidDiagrammer
 
 
 def discover_multi_perspective_dfg(
@@ -37,7 +40,6 @@ def discover_multi_perspective_dfg(
     multi_perspective_dfg = dfg.get_graph()
     start_activities = dfg.get_start_activities()
     end_activities = dfg.get_end_activities()
-
     return multi_perspective_dfg, start_activities, end_activities
 
 
@@ -76,6 +78,7 @@ def view_multi_perspective_dfg(
     format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
     rankdir: str = "TD",
 ):
+    # NOTE: This would be use for interactive Python Environments like Jupyter Notebooks or Google Colabs
     string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,
         start_activities=start_activities,
@@ -97,10 +100,10 @@ def save_vis_multi_perspective_dfg(
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
-    format: str = "png",  # png, svg, html (según viabilidad; si solo se puede PNG, es OK)
+    format: str = "png",
     rankdir: str = "TD",
 ):
-    string = get_multi_perspective_dfg_string(
+    dfg_string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,
         start_activities=start_activities,
         end_activities=end_activities,
@@ -109,7 +112,10 @@ def save_vis_multi_perspective_dfg(
         visualize_cost=visualize_cost,
         rankdir=rankdir,
     )
+    file_name = tempfile.NamedTemporaryFile(suffix=".gv")
+    file_name.close()
+    src = Source(dfg_string, file_name.name, format=format)
 
-    # Guardar diagrama
-
-    return None
+    render = src.render(cleanup=True)
+    shutil.copyfile(render, file_name.name)
+    shutil.copyfile(render, f"{file_path}.{format}")

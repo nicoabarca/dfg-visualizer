@@ -18,7 +18,6 @@ blasting_format = {
 }
 
 blasting_event_log = dfg_visualizer.log_formatter(blasting_event_log, blasting_format)
-
 (
     multi_perspective_dfg,
     start_activities,
@@ -42,6 +41,18 @@ dfg_string = dfg_visualizer.get_multi_perspective_dfg_string(
     visualize_time=True,
     visualize_cost=True,
     cost_currency="USD",
+    rankdir="TB",
+)
+print(dfg_string)
+dfg_visualizer.save_vis_multi_perspective_dfg(
+    multi_perspective_dfg,
+    start_activities,
+    end_activities,
+    file_path="img",
+    visualize_frequency=True,
+    visualize_time=True,
+    visualize_cost=True,
+    format="png",
     rankdir="TB",
 )
 

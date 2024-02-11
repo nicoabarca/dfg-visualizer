@@ -1,5 +1,4 @@
-from dfg_visualizer.diagrammers.constants import (
-    GRAPH_VIZ_GRAPH,
+from dfg_visualizer.utils.constants import (
     GRAPH_VIZ_RANKDIR,
     GRAPH_VIZ_START_NODE,
     GRAPH_VIZ_END_NODE,
@@ -9,9 +8,10 @@ from dfg_visualizer.diagrammers.constants import (
     GRAPH_VIZ_LINK,
     GRAPH_VIZ_LINK_DATA,
     GRAPH_VIZ_LINK_DATA_ROW,
+    GRAPH_VIZ_START_END_LINK,
 )
 
-from dfg_visualizer.utils.diagrammers import (
+from dfg_visualizer.utils.diagrammer import (
     ids_mapping,
     dimensions_min_and_max,
     hsv_color,
@@ -59,6 +59,7 @@ class GraphVizDiagrammer:
         self.add_config()
         self.add_activities_string()
         self.add_connections_string()
+        self.add_graph_type()
 
     def add_config(self):
         self.diagram_string += GRAPH_VIZ_RANKDIR.format(self.rankdir)
@@ -96,16 +97,49 @@ class GraphVizDiagrammer:
         return bgcolor, content
 
     def add_connections_string(self):
+        self.add_start_and_end_connections_string()
         for connection in self.dfg["connections"].keys():
             connection_string = self.build_connection_string(connection)
+            self.diagram_string += connection_string
+
+    def add_start_and_end_connections_string(self):
+        for activity, frequency in self.start_activities.items():
+            connection_string = GRAPH_VIZ_START_END_LINK.format(
+                "start",
+                self.activities_ids[activity],
+                link_width(frequency, self.dimensions_min_and_max["frequency"])
+                if self.visualize_frequency
+                else 1,
+                frequency if self.visualize_frequency else "",
+            )
+            self.diagram_string += connection_string
+
+        for activity, frequency in self.end_activities.items():
+            connection_string = GRAPH_VIZ_START_END_LINK.format(
+                self.activities_ids[activity],
+                "complete",
+                link_width(frequency, self.dimensions_min_and_max["frequency"])
+                if self.visualize_frequency
+                else 1,
+                frequency if self.visualize_frequency else "",
+            )
             self.diagram_string += connection_string
 
     def build_connection_string(self, connection):
         dimensions_string = ""
         for dimension, measure in self.dfg["connections"][connection].items():
-            penwidth, bgcolor, content = self.connection_string_based_on_data(dimension, measure)
+            bgcolor, content = self.connection_string_based_on_data(dimension, measure)
             if content != "":
                 dimensions_string += GRAPH_VIZ_LINK_DATA_ROW.format(bgcolor, content)
+
+        penwidth = (
+            link_width(
+                self.dfg["connections"][connection]["frequency"],
+                self.dimensions_min_and_max["frequency"],
+            )
+            if self.visualize_frequency
+            else 1
+        )
 
         link_data_string = GRAPH_VIZ_LINK_DATA.format(dimensions_string)
 
@@ -117,16 +151,17 @@ class GraphVizDiagrammer:
         )
 
     def connection_string_based_on_data(self, dimension, measure):
-        penwidth = link_width(measure, self.dimensions_min_and_max[dimension])
         bgcolor = hsv_color(measure, dimension, self.dimensions_min_and_max[dimension])
         content = ""
         if dimension == "frequency":
             content = measure if self.visualize_frequency else content
-            penwidth = penwidth if self.visualize_frequency else 1
         elif dimension == "time" and self.visualize_time:
             content = format_time(measure)
 
-        return penwidth, bgcolor, content
+        return bgcolor, content
+
+    def add_graph_type(self):
+        self.diagram_string = "digraph {\n" + self.diagram_string + "}"
 
     def get_diagram_string(self):
         return self.diagram_string
