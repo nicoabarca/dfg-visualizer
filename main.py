@@ -1,42 +1,51 @@
-import base64
 import os
 import pandas as pd
-
-from IPython.display import Image, display
-
 import dfg_visualizer
 
+blasting_event_log_path = os.path.join("data", "blasting_with_rework_event_log.csv")
+blasting_event_log = pd.read_csv(blasting_event_log_path, sep=";")
 
-def pretty_print_dict(dictionary, indent=0):
-    for key, value in dictionary.items():
-        if isinstance(value, dict):
-            print(" " * indent + f"{key}:")
-            pretty_print_dict(value, indent + 4)
-        else:
-            print(" " * indent + f"{key}: {value}")
+phones_event_log_path = os.path.join("data", "reparacion_telefonos_sc.csv")
+phones_event_log = pd.read_csv(phones_event_log_path, sep=";")
 
+# Key is the column format name of pm4py
+# Value is the column name of the specific log and soon to be changed
+# We will always need 3 columns for case, activity and timestamp
+format_blasting = {
+    "case:concept:name": "Case ID",
+    "concept:name": "Activity",
+    "time:timestamp": "Complete",
+    "start_timestamp": "Start",
+    "org:resource": "Resource",
+    "cost:total": "Cost",
+}
 
-event_log_path = os.path.join("data", "blasting_with_rework_event_log.csv")
+format_phones = {
+    "case:concept:name": "case:concept:name",
+    "concept:name": "concept:name",
+    "time:timestamp": "time:timestamp",
+    "start_timestamp": "",
+    "org:resource": "org:resource",
+    "cost:total": "",
+}
 
-event_log = pd.read_csv(event_log_path, sep=";")
-
-event_log = dfg_visualizer.log_formatter(event_log)
+blasting_event_log = dfg_visualizer.log_formatter(blasting_event_log, format_blasting)
+phones_event_log = dfg_visualizer.log_formatter(phones_event_log, format_phones)
 
 (
     multi_perspective_dfg,
     start_activities,
     end_activities,
 ) = dfg_visualizer.discover_multi_perspective_dfg(
-    event_log,
+    blasting_event_log,
     calculate_cost=True,
     calculate_frequency=True,
     calculate_time=True,
-    frequency_statistic="relative-activity",
-    time_statistic="median",
-    cost_statistic="max",
+    frequency_statistic="absolute-activity",
+    time_statistic="mean",
+    cost_statistic="mean",
 )
 
-breakpoint()
 
 dfg_string = dfg_visualizer.get_multi_perspective_dfg_string(
     multi_perspective_dfg,
@@ -48,17 +57,6 @@ dfg_string = dfg_visualizer.get_multi_perspective_dfg_string(
     cost_currency="USD",
     rankdir="TD",
 )
-
-
-def mm(graph):
-    graphbytes = graph.encode("ascii")
-    base64_bytes = base64.b64encode(graphbytes)
-    base64_string = base64_bytes.decode("ascii")
-    Image(url="https://mermaid.ink/img/" + base64_string)
-
-
-mm(dfg_string)
-
 
 with open("dfg_string.txt", "w") as f:
     f.write(dfg_string)

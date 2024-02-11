@@ -42,12 +42,16 @@ class DirectlyFollowsGraphBuilder:
             self.update_connections(prev_activity, actual_activity)
 
     def update_activities(self, activity):
-        activity_name = activity[self.parameters.activity_key]
-        activity_time = (
-            activity[self.parameters.timestamp_key] - activity[self.parameters.start_timestamp_key]
-        )
-        activity_cost = activity[self.parameters.cost_key]
-        self.update_activity_data(activity_name, activity_time, activity_cost)
+        try:
+            activity_name = activity[self.parameters.activity_key]
+            activity_time = (
+                activity[self.parameters.timestamp_key]
+                - activity[self.parameters.start_timestamp_key]
+            )
+            activity_cost = activity[self.parameters.cost_key]
+            self.update_activity_data(activity_name, activity_time, activity_cost)
+        except KeyError as error:
+            pass
 
     def update_activity_data(self, name, time, cost):
         activity = self.dfg.activities.setdefault(name, new_activity_dict(self.parameters))

@@ -45,14 +45,14 @@ def hsl_color(val, dimension, dimension_scale):
         hue = 120
         saturation = 60
 
-    lightness = interpolated_value(val, dimension_scale, lightness_scale)
+    lightness = round(interpolated_value(val, dimension_scale, lightness_scale), 2)
 
     return f"hsl({hue},{saturation}%,{lightness}%)"
 
 
 def link_width(val, dimension_scale):
     width_scale = (0.1, 8)
-    link_width = interpolated_value(val, dimension_scale, width_scale)
+    link_width = round(interpolated_value(val, dimension_scale, width_scale), 2)
     return link_width
 
 
@@ -66,12 +66,25 @@ def format_time(seconds):
         return f"{hours} hr {minutes} min {remaining_seconds} seg"
     elif minutes > 0:
         return f"{minutes} min {remaining_seconds} seg"
-    else:
+    elif remaining_seconds > 0:
         return f"{remaining_seconds} seg"
+    else:
+        return "instant"
 
 
 def interpolated_value(value, from_scale, to_scale):
     value = max(min(value, from_scale[1]), from_scale[0])
-    normalized_value = (value - from_scale[0]) / (from_scale[1] - from_scale[0])
+    denominator = max(1, (from_scale[1] - from_scale[0]))
+    normalized_value = (value - from_scale[0]) / denominator
     interpolated_value = to_scale[0] + normalized_value * (to_scale[1] - to_scale[0])
     return interpolated_value
+
+
+def activities_id_mapping(activities):
+    id = 0
+    mapping = {}
+    for activity in activities.keys():
+        mapping[activity] = id
+        id += 1
+
+    return mapping

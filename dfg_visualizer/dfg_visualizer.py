@@ -3,6 +3,7 @@ from dfg_visualizer.utils.visualizer import (
     hsl_color,
     format_time,
     link_width,
+    activities_id_mapping,
 )
 
 
@@ -29,6 +30,7 @@ class DirectlyFollowsGraphVisualizer:
         self.diagram_string = ""
         self.links_counter = 0
         self.link_styles_string = ""
+        self.activities_id = activities_id_mapping(self.dfg["activities"])
         self.dimensions_min_and_max = get_dimensions_min_and_max(
             self.dfg["activities"], self.dfg["connections"]
         )
@@ -57,7 +59,8 @@ class DirectlyFollowsGraphVisualizer:
                 )
             activity_string = activity_string.format(activity_dimensions_string)
 
-            self.diagram_string += f"{activity.replace(' ', '_')}(\"{activity_string}\")\n"
+            # self.diagram_string += f"{activity.replace(' ', '_')}(\"{activity_string}\")\n"
+            self.diagram_string += f'{self.activities_id[activity]}("{activity_string}")\n'
 
     def add_connections(self):
         self.add_start_connections()
@@ -70,7 +73,7 @@ class DirectlyFollowsGraphVisualizer:
                     self.link_styles_string += f"linkStyle {self.links_counter} stroke-width: {link_width(dimension_measure, self.dimensions_min_and_max['frequency'])}px;\n"
                     self.links_counter += 1
 
-            self.diagram_string += f"{connection[0].replace(' ', '_')}-->|\"{connections_string}\"|{connection[1].replace(' ', '_')}\n"
+            self.diagram_string += f'{self.activities_id[connection[0]]}-->|"{connections_string}"|{self.activities_id[connection[1]]}\n'
 
         self.add_end_connections()
 
@@ -78,7 +81,7 @@ class DirectlyFollowsGraphVisualizer:
         start_connections_string = ""
         for activity, frequency in self.start_activities.items():
             color = hsl_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
-            connection_string = f"start -.\"<span style='background-color: white; color: {color};'>{frequency}</span>\".- {activity.replace(' ', '_')}\n"
+            connection_string = f"start -.\"<span style='background-color: white; color: {color};'>{frequency}</span>\".- {self.activities_id[activity]}\n"
             start_connections_string += connection_string
 
             self.link_styles_string += f"linkStyle {self.links_counter} stroke-width: {link_width(frequency, self.dimensions_min_and_max['frequency'])}px;\n"
@@ -89,7 +92,7 @@ class DirectlyFollowsGraphVisualizer:
         end_connections_string = ""
         for activity, frequency in self.end_activities.items():
             color = hsl_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
-            connections_string = f"{activity.replace(' ', '_')} -.\"<span style='background-color: white; color: {color};'>{frequency}</span>\".- complete\n"
+            connections_string = f"{self.activities_id[activity]} -.\"<span style='background-color: white; color: {color};'>{frequency}</span>\".- complete\n"
             end_connections_string += connections_string
 
             self.link_styles_string += f"linkStyle {self.links_counter} stroke-width: {link_width(frequency, self.dimensions_min_and_max['frequency'])}px;\n"
@@ -98,9 +101,7 @@ class DirectlyFollowsGraphVisualizer:
         self.diagram_string += end_connections_string
 
     def add_class_definitions(self):
-        formatted_activity_classes = [
-            activity.replace(" ", "_") for activity in self.dfg["activities"].keys()
-        ]
+        formatted_activity_classes = [str(id) for id in self.activities_id.values()]
         activity_classes_string = ",".join(formatted_activity_classes)
 
         self.diagram_string += f"class {activity_classes_string} activityClass\n"
