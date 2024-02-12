@@ -32,20 +32,6 @@ road_traffic_format = {
 blasting_event_log = dfg_visualizer.log_formatter(blasting_event_log, blasting_format)
 road_traffic_event_log = dfg_visualizer.log_formatter(road_traffic_event_log, road_traffic_format)
 
-# (
-#     multi_perspective_dfg,
-#     start_activities,
-#     end_activities,
-# ) = dfg_visualizer.discover_multi_perspective_dfg(
-#     road_traffic_log,
-#     calculate_cost=True,
-#     calculate_frequency=True,
-#     calculate_time=True,
-#     frequency_statistic="absolute-activity",
-#     time_statistic="mean",
-#     cost_statistic="mean",
-# )
-
 freq_statistics = ["absolute-activity", "absolute-case", "relative-case", "relative-activity"]
 numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
 

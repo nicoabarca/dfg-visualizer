@@ -25,6 +25,26 @@ def discover_multi_perspective_dfg(
     time_statistic: str = "mean",
     cost_statistic: str = "mean",
 ) -> Tuple[dict, dict, dict]:
+    """
+    Discovers a multi-perspective Directly-Follows Graph (DFG) from a log.
+
+    Args:
+        log (pd.DataFrame): The event log as a pandas DataFrame.
+        case_id_key (str, optional): The column name for the case ID. Defaults to "case:concept:name".
+        activity_key (str, optional): The column name for the activity name. Defaults to "concept:name".
+        timestamp_key (str, optional): The column name for the timestamp. Defaults to "time:timestamp".
+        start_timestamp_key (str, optional): The column name for the start timestamp. Defaults to "start_timestamp".
+        cost_key (str, optional): The column name for the cost. Defaults to "cost:total".
+        calculate_frequency (bool, optional): Whether to calculate activity frequencies. Defaults to True.
+        calculate_time (bool, optional): Whether to calculate activity times. Defaults to True.
+        calculate_cost (bool, optional): Whether to calculate activity costs. Defaults to True.
+        frequency_statistic (str, optional): The statistic to use for activity frequencies. Defaults to "absolute-activity".
+        time_statistic (str, optional): The statistic to use for activity times. Defaults to "mean".
+        cost_statistic (str, optional): The statistic to use for activity costs. Defaults to "mean".
+
+    Returns:
+        Tuple[dict, dict, dict]: A tuple containing the multi-perspective DFG, start activities, and end activities.
+    """
     dfg_parameters = DirectlyFollowsGraphParameters(
         case_id_key,
         activity_key,
@@ -56,6 +76,23 @@ def get_multi_perspective_dfg_string(
     cost_currency: str = "",
     rankdir: str = "TD",
 ):
+    """
+    Creates a string representation of a multi-perspective Directly-Follows Graph (DFG) diagram.
+
+    Args:
+        multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
+        start_activities (dict): A dictionary containing the start activities of the DFG.
+        end_activities (dict): A dictionary containing the end activities of the DFG.
+        visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
+        visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
+        visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
+        cost_currency (str, optional): The currency symbol to use for cost visualization. Defaults to "".
+        rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
+
+    Returns:
+        str: The string representation of the multi-perspective DFG diagram.
+    """
+
     diagrammer = GraphVizDiagrammer(
         multi_perspective_dfg,
         start_activities,
@@ -80,6 +117,18 @@ def view_multi_perspective_dfg(
     visualize_cost: bool = True,
     rankdir: str = "TD",
 ):
+    """
+    Visualizes a multi-perspective Directly-Follows Graph (DFG) using graphviz.
+
+    Args:
+        multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
+        start_activities (dict): A dictionary mapping start activities to their respective frequencies.
+        end_activities (dict): A dictionary mapping end activities to their respective frequencies.
+        visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
+        visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
+        visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
+        rankdir (str, optional): The direction of the graph layout. Defaults to "TD" (top-down).
+    """
     dfg_string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,
         start_activities=start_activities,
@@ -103,8 +152,6 @@ def view_multi_perspective_dfg(
     plt.imshow(img)
     plt.show()
 
-    return dfg_string
-
 
 def save_vis_multi_perspective_dfg(
     multi_perspective_dfg: dict,
@@ -118,6 +165,21 @@ def save_vis_multi_perspective_dfg(
     format: str = "png",
     rankdir: str = "TD",
 ):
+    """
+    Save a visual representation of a multi-perspective Directly-Follows Graph (DFG) to a file.
+
+    Parameters:
+    - multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
+    - start_activities (dict): A dictionary mapping start activities to their respective labels.
+    - end_activities (dict): A dictionary mapping end activities to their respective labels.
+    - file_path (str): The path where the visualization file will be saved.
+    - visualize_frequency (bool): Whether to visualize the frequency of activities (default: True).
+    - visualize_time (bool): Whether to visualize the time of activities (default: True).
+    - visualize_cost (bool): Whether to visualize the cost of activities (default: True).
+    - cost_currency (str): The currency symbol to be displayed with the cost (default: "").
+    - format (str): The format of the visualization file (default: "png").
+    - rankdir (str): The direction of the graph layout (default: "TD").
+    """
     dfg_string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,
         start_activities=start_activities,

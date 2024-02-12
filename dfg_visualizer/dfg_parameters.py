@@ -23,15 +23,15 @@ class DirectlyFollowsGraphParameters:
             "relative-case",
         }:
             raise ValueError(
-                "Valid values for frequency statistic are absolute-activity, absolute-case,relative-activity, relative-case"
+                "Valid values for frequency statistic are absolute-activity, absolute-case, relative-activity and relative-case"
             )
 
         if self.time_statistic not in {"mean", "median", "sum", "max", "min", "stdev"}:
             raise ValueError(
-                "Valud values for time statistic are mean, median, sum, max, min ,stdev"
+                "Valid values for time statistic are mean, median, sum, max, min and stdev"
             )
 
         if self.cost_statistic not in {"mean", "median", "sum", "max", "min", "stdev"}:
             raise ValueError(
-                "Valud values for cost statistic are mean, median, sum, max, min ,stdev"
+                "Valid values for cost statistic are mean, median, sum, max, min and stdev"
             )
