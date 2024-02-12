@@ -2,6 +2,16 @@ import pandas as pd
 
 
 def log_formatter(log: pd.DataFrame, format: dict):
+    """
+    Formats the log DataFrame based on the provided format dictionary.
+
+    Args:
+        log (pd.DataFrame): The log DataFrame to be formatted.
+        format (dict): The format dictionary containing the column mappings.
+
+    Returns:
+        pd.DataFrame: The formatted log DataFrame.
+    """
     log = log.rename(
         columns={
             format["case:concept:name"]: "case:concept:name",
