@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import dfg_visualizer
+import mpdfg
 
 blasting_event_log_path = os.path.join("data", "blasting_with_rework_event_log.csv")
 road_traffic_event_log_path = os.path.join("data", "Road_Traffic_Fine_Management_Process.csv")
@@ -29,8 +29,8 @@ road_traffic_format = {
     "cost:total": "",
 }
 
-blasting_event_log = dfg_visualizer.log_formatter(blasting_event_log, blasting_format)
-road_traffic_event_log = dfg_visualizer.log_formatter(road_traffic_event_log, road_traffic_format)
+blasting_event_log = mpdfg.log_formatter(blasting_event_log, blasting_format)
+road_traffic_event_log = mpdfg.log_formatter(road_traffic_event_log, road_traffic_format)
 
 freq_statistics = ["absolute-activity", "absolute-case", "relative-case", "relative-activity"]
 numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
@@ -38,7 +38,7 @@ numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
     multi_perspective_dfg,
     start_activities,
     end_activities,
-) = dfg_visualizer.discover_multi_perspective_dfg(
+) = mpdfg.discover_multi_perspective_dfg(
     road_traffic_event_log,
     calculate_cost=True,
     calculate_frequency=True,
@@ -47,7 +47,7 @@ numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
     time_statistic="mean",
     cost_statistic="mean",
 )
-dfg_visualizer.save_vis_multi_perspective_dfg(
+mpdfg.save_vis_multi_perspective_dfg(
     multi_perspective_dfg,
     start_activities,
     end_activities,

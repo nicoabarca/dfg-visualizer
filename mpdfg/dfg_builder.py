@@ -1,4 +1,4 @@
-from dfg_visualizer.utils.builder import (
+from mpdfg.utils.builder import (
     new_activity_dict,
     new_connection_dict,
     statistics_names_mapping,

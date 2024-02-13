@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from typing import Tuple
 from graphviz import Source
-from dfg_visualizer.dfg import DirectlyFollowsGraph
-from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
-from dfg_visualizer.diagrammers.graphviz import GraphVizDiagrammer
-# from dfg_visualizer.diagrammers.mermaid import MermaidDiagrammer
+from mpdfg.dfg import DirectlyFollowsGraph
+from mpdfg.dfg_parameters import DirectlyFollowsGraphParameters
+from mpdfg.diagrammers.graphviz import GraphVizDiagrammer
+# from mpdfg.diagrammers.mermaid import MermaidDiagrammer
 
 
 def discover_multi_perspective_dfg(

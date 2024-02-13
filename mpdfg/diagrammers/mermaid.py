@@ -1,4 +1,4 @@
-from dfg_visualizer.utils.diagrammer import (
+from mpdfg.utils.diagrammer import (
     dimensions_min_and_max,
     hsl_color,
     format_time,

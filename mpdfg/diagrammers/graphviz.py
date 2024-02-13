@@ -1,4 +1,4 @@
-from dfg_visualizer.utils.constants import (
+from mpdfg.utils.constants import (
     GRAPH_VIZ_RANKDIR,
     GRAPH_VIZ_START_NODE,
     GRAPH_VIZ_END_NODE,
@@ -11,7 +11,7 @@ from dfg_visualizer.utils.constants import (
     GRAPH_VIZ_START_END_LINK,
 )
 
-from dfg_visualizer.utils.diagrammer import (
+from mpdfg.utils.diagrammer import (
     ids_mapping,
     dimensions_min_and_max,
     format_time,

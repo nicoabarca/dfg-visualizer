@@ -1,6 +1,6 @@
 import pandas as pd
-from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
-from dfg_visualizer.dfg_builder import DirectlyFollowsGraphBuilder
+from mpdfg.dfg_parameters import DirectlyFollowsGraphParameters
+from mpdfg.dfg_builder import DirectlyFollowsGraphBuilder
 
 
 class DirectlyFollowsGraph:
