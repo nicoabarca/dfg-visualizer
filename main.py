@@ -34,32 +34,27 @@ road_traffic_event_log = dfg_visualizer.log_formatter(road_traffic_event_log, ro
 
 freq_statistics = ["absolute-activity", "absolute-case", "relative-case", "relative-activity"]
 numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
-
-
-for fs in freq_statistics:
-    for ns in numbers_statistics:
-        print(fs, ns)
-        (
-            multi_perspective_dfg,
-            start_activities,
-            end_activities,
-        ) = dfg_visualizer.discover_multi_perspective_dfg(
-            blasting_event_log,
-            calculate_cost=True,
-            calculate_frequency=True,
-            calculate_time=True,
-            frequency_statistic=fs,
-            time_statistic=ns,
-            cost_statistic=ns,
-        )
-        dfg_visualizer.save_vis_multi_perspective_dfg(
-            multi_perspective_dfg,
-            start_activities,
-            end_activities,
-            file_path=f"imgs/fs_{fs}_ns_{ns}",
-            visualize_frequency=True,
-            visualize_time=True,
-            visualize_cost=True,
-            format="png",
-            rankdir="TB",
-        )
+(
+    multi_perspective_dfg,
+    start_activities,
+    end_activities,
+) = dfg_visualizer.discover_multi_perspective_dfg(
+    road_traffic_event_log,
+    calculate_cost=True,
+    calculate_frequency=True,
+    calculate_time=True,
+    frequency_statistic="absolute-activity",
+    time_statistic="mean",
+    cost_statistic="mean",
+)
+dfg_visualizer.save_vis_multi_perspective_dfg(
+    multi_perspective_dfg,
+    start_activities,
+    end_activities,
+    file_path="road",
+    visualize_frequency=True,
+    visualize_time=True,
+    visualize_cost=False,
+    format="png",
+    rankdir="TB",
+)

@@ -8,7 +8,7 @@ from graphviz import Source
 from dfg_visualizer.dfg import DirectlyFollowsGraph
 from dfg_visualizer.dfg_parameters import DirectlyFollowsGraphParameters
 from dfg_visualizer.diagrammers.graphviz import GraphVizDiagrammer
-from dfg_visualizer.diagrammers.mermaid import MermaidDiagrammer
+# from dfg_visualizer.diagrammers.mermaid import MermaidDiagrammer
 
 
 def discover_multi_perspective_dfg(
@@ -73,7 +73,7 @@ def get_multi_perspective_dfg_string(
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
-    cost_currency: str = "",
+    cost_currency: str = "USD",
     rankdir: str = "TD",
 ):
     """
@@ -86,7 +86,7 @@ def get_multi_perspective_dfg_string(
         visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
         visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
-        cost_currency (str, optional): The currency symbol to use for cost visualization. Defaults to "".
+        cost_currency (str, optional): The currency symbol to use for cost visualization. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
 
     Returns:
@@ -115,6 +115,7 @@ def view_multi_perspective_dfg(
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
+    cost_currency: str = "USD",
     rankdir: str = "TD",
 ):
     """
@@ -127,6 +128,7 @@ def view_multi_perspective_dfg(
         visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
         visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
+        cost_currency (str): The currency symbol to be displayed with the cost. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD" (top-down).
     """
     dfg_string = get_multi_perspective_dfg_string(
@@ -136,6 +138,7 @@ def view_multi_perspective_dfg(
         visualize_frequency=visualize_frequency,
         visualize_time=visualize_time,
         visualize_cost=visualize_cost,
+        cost_currency=cost_currency,
         rankdir=rankdir,
     )
 
@@ -161,7 +164,7 @@ def save_vis_multi_perspective_dfg(
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
-    cost_currency: str = "",
+    cost_currency: str = "USD",
     format: str = "png",
     rankdir: str = "TD",
 ):
@@ -169,16 +172,16 @@ def save_vis_multi_perspective_dfg(
     Save a visual representation of a multi-perspective Directly-Follows Graph (DFG) to a file.
 
     Parameters:
-    - multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
-    - start_activities (dict): A dictionary mapping start activities to their respective labels.
-    - end_activities (dict): A dictionary mapping end activities to their respective labels.
-    - file_path (str): The path where the visualization file will be saved.
-    - visualize_frequency (bool): Whether to visualize the frequency of activities (default: True).
-    - visualize_time (bool): Whether to visualize the time of activities (default: True).
-    - visualize_cost (bool): Whether to visualize the cost of activities (default: True).
-    - cost_currency (str): The currency symbol to be displayed with the cost (default: "").
-    - format (str): The format of the visualization file (default: "png").
-    - rankdir (str): The direction of the graph layout (default: "TD").
+        multi_perspective_dfg (dict): The multi-perspective DFG.
+        start_activities (dict): A dictionary mapping start activities to their respective labels.
+        end_activities (dict): A dictionary mapping end activities to their respective labels.
+        file_path (str): The path to save the visual representation file.
+        visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
+        visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
+        visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
+        cost_currency (str, optional): The currency used for cost visualization. Defaults to "USD".
+        format (str, optional): The format of the visual representation file. Defaults to "png".
+        rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
     """
     dfg_string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,

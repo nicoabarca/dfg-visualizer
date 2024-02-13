@@ -1,3 +1,11 @@
+from datetime import datetime, timedelta
+from dfg_visualizer.utils.color_scales import (
+    TIME_COLOR_SCALE,
+    FREQUENCY_COLOR_SCALE,
+    COST_COLOR_SCALE,
+)
+
+
 def dimensions_min_and_max(activities, connections):
     activities_dimensions = next(iter(activities.values())).keys()
     connections_dimensions = next(iter(connections.values())).keys()
@@ -28,29 +36,20 @@ def ids_mapping(activities):
     return mapping
 
 
-def hsv_color(measure, dimension, dimension_scale):
-    hue, saturation = hue_and_saturation_by_dimension(dimension)
-    value_scale = (80, 45)
-    value = round(interpolated_value(measure, dimension_scale, value_scale), 3)
-
-    return f"{round(hue / 360, 3)} {round(saturation / 100, 3)} {round(value / 100, 3)}"
-
-
-def hsl_color(measure, dimension, dimension_scale):
-    hue, saturation = hue_and_saturation_by_dimension(dimension)
-    lightness_scale = (75, 35)
-    lightness = round(interpolated_value(measure, dimension_scale, lightness_scale), 2)
-
-    return f"hsl({hue},{saturation}%,{lightness}%)"
+def background_color(measure, dimension, dimension_scale):
+    colors_palette_scale = (90, 255)
+    color_palette = color_palette_by_dimension(dimension)
+    assigned_color_index = round(interpolated_value(measure, dimension_scale, colors_palette_scale))
+    return color_palette[assigned_color_index]
 
 
-def hue_and_saturation_by_dimension(dimension):
+def color_palette_by_dimension(dimension):
     if dimension == "frequency":
-        return (225, 100)  # blue
-    elif dimension == "time":
-        return (0, 100)  # red
+        return FREQUENCY_COLOR_SCALE
+    elif dimension == "cost":
+        return COST_COLOR_SCALE
     else:
-        return (120, 100)  # green
+        return TIME_COLOR_SCALE
 
 
 def interpolated_value(measure, from_scale, to_scale):
@@ -61,26 +60,31 @@ def interpolated_value(measure, from_scale, to_scale):
     return interpolated_value
 
 
-def format_time(seconds):
-    seconds = int(seconds)
-    days = seconds // 86400
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    remaining_seconds = seconds % 60
+def format_time(total_seconds):
+    delta = timedelta(seconds=total_seconds)
+    years = round(delta.days // 365)
+    months = round((delta.days % 365) // 30)
+    days = round((delta.days % 365) % 30)
+    hours = round(delta.seconds // 3600)
+    minutes = round((delta.seconds % 3600) // 60)
+    seconds = round(delta.seconds % 60)
 
+    if years > 0:
+        return "{:02d}y {:02d}m {:02d}d ".format(years, months, days)
+    if months > 0:
+        return "{:02d}m {:02d}d {:02d}h ".format(months, days, hours)
     if days > 0:
-        return f"{days} days {hours} hr {minutes} min"
+        return "{:02d}d {:02d}h {:02d}m ".format(days, hours, minutes)
     if hours > 0:
-        return f"{hours} hr {minutes} min {remaining_seconds} seg"
-    elif minutes > 0:
-        return f"{minutes} min {remaining_seconds} seg"
-    elif remaining_seconds > 0:
-        return f"{remaining_seconds} seg"
-    else:
-        return "instant"
+        return "{:02d}h {:02d}m {:02d}s ".format(hours, minutes, seconds)
+    if minutes > 0:
+        return "{:02d}m {:02d}s".format(minutes, seconds)
+    if seconds > 0:
+        return "{:02d}s".format(seconds)
+    return "Instant"
 
 
 def link_width(measure, dimension_scale):
-    width_scale = (1, 10)
+    width_scale = (1, 8)
     link_width = round(interpolated_value(measure, dimension_scale, width_scale), 2)
     return link_width

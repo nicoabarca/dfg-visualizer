@@ -14,9 +14,9 @@ from dfg_visualizer.utils.constants import (
 from dfg_visualizer.utils.diagrammer import (
     ids_mapping,
     dimensions_min_and_max,
-    hsv_color,
     format_time,
     link_width,
+    background_color,
 )
 
 
@@ -29,7 +29,7 @@ class GraphVizDiagrammer:
         visualize_frequency: bool = True,
         visualize_time: bool = True,
         visualize_cost: bool = True,
-        cost_currency: str = "",
+        cost_currency: str = "USD",
         rankdir: str = "TB",
     ):
         self.dfg = dfg
@@ -82,7 +82,7 @@ class GraphVizDiagrammer:
         return GRAPH_VIZ_NODE.format(self.activities_ids[activity], node_data_string)
 
     def activity_string_based_on_data(self, activity, dimension, measure):
-        bgcolor = hsv_color(measure, dimension, self.dimensions_min_and_max[dimension])
+        bgcolor = background_color(measure, dimension, self.dimensions_min_and_max[dimension])
         content = ""
         if dimension == "frequency":
             bgcolor = bgcolor if self.visualize_frequency else "royalblue"
@@ -106,24 +106,45 @@ class GraphVizDiagrammer:
 
     def add_start_and_end_connections_string(self):
         for activity, frequency in self.start_activities.items():
-            connection_string = GRAPH_VIZ_START_END_LINK.format(
-                "start",
-                self.activities_ids[activity],
+            activity_id = self.activities_ids[activity]
+            penwidth = (
                 link_width(frequency, self.dimensions_min_and_max["frequency"])
                 if self.visualize_frequency
-                else 1,
-                "{0:,}".format(frequency) if self.visualize_frequency else "",
+                else 1
+            )
+            bgcolor = (
+                background_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
+                if self.visualize_frequency
+                else "black"
+            )
+
+            connection_string = GRAPH_VIZ_START_END_LINK.format(
+                "start",
+                activity_id,
+                penwidth,
+                bgcolor,
+                "{0:,}".format(frequency) if self.visualize_frequency else " ",
             )
             self.diagram_string += connection_string
 
         for activity, frequency in self.end_activities.items():
-            connection_string = GRAPH_VIZ_START_END_LINK.format(
-                self.activities_ids[activity],
-                "complete",
+            activity_id = self.activities_ids[activity]
+            penwidth = (
                 link_width(frequency, self.dimensions_min_and_max["frequency"])
                 if self.visualize_frequency
-                else 1,
-                "{0:,}".format(frequency) if self.visualize_frequency else "",
+                else 1
+            )
+            bgcolor = (
+                background_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
+                if self.visualize_frequency
+                else "black"
+            )
+            connection_string = GRAPH_VIZ_START_END_LINK.format(
+                activity_id,
+                "complete",
+                penwidth,
+                bgcolor,
+                "{0:,}".format(frequency) if self.visualize_frequency else " ",
             )
             self.diagram_string += connection_string
 
@@ -153,7 +174,7 @@ class GraphVizDiagrammer:
         )
 
     def connection_string_based_on_data(self, dimension, measure):
-        bgcolor = hsv_color(measure, dimension, self.dimensions_min_and_max[dimension])
+        bgcolor = background_color(measure, dimension, self.dimensions_min_and_max[dimension])
         content = ""
         if dimension == "frequency":
             content = "{0:,}".format(measure) if self.visualize_frequency else content
