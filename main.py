@@ -47,6 +47,8 @@ numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
     time_statistic="mean",
     cost_statistic="mean",
 )
+
+
 mpdfg.save_vis_multi_perspective_dfg(
     multi_perspective_dfg,
     start_activities,
