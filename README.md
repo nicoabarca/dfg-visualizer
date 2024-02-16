@@ -75,6 +75,7 @@ mpdfg_string = mpdfg.get_multi_perspective_dfg_string(
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
+    rankdir="TB",
     diagram_tool="graphviz",
 )
 
