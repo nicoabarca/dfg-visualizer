@@ -27,7 +27,7 @@ The format dictionary to pass as argument to this function needs to have the fol
 }
 ```
 
-Each value of the dictionary needs to match the corresponding column name of the initial event log. If `start_timestamp`, `org:resource` and `cost:total` are not present in your event log, you can leave its values as a blank strings.
+Each value of the dictionary needs to match the corresponding column name of the initial event log. If `start_timestamp`, `org:resource` and `cost:total` are not present in your event log, you can leave its values as blank strings.
 
 ```py
 import mpdfg
@@ -89,7 +89,7 @@ mpdfg.view_multi_perspective_dfg(
     multi_perspective_dfg,
     start_activities,
     end_activities,
-    file_path="road",
+    file_path="diagram",
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
