@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from typing import Tuple
 from graphviz import Source
+from mpdfg.utils.actions import save_graphviz_diagram, save_mermaid_diagram
 from mpdfg.dfg import DirectlyFollowsGraph
 from mpdfg.dfg_parameters import DirectlyFollowsGraphParameters
 from mpdfg.diagrammers.graphviz import GraphVizDiagrammer
-# from mpdfg.diagrammers.mermaid import MermaidDiagrammer
+from mpdfg.diagrammers.mermaid import MermaidDiagrammer
 
 
 def discover_multi_perspective_dfg(
@@ -75,6 +76,7 @@ def get_multi_perspective_dfg_string(
     visualize_cost: bool = True,
     cost_currency: str = "USD",
     rankdir: str = "TD",
+    diagram_tool: str = "graphviz",
 ):
     """
     Creates a string representation of a multi-perspective Directly-Follows Graph (DFG) diagram.
@@ -88,21 +90,38 @@ def get_multi_perspective_dfg_string(
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
         cost_currency (str, optional): The currency symbol to use for cost visualization. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
+        diagram_tool (str | "graphviz" | "mermaid", optional): The diagram_tool to use for building the diagram. Defaults to "graphviz".
 
     Returns:
         str: The string representation of the multi-perspective DFG diagram.
-    """
 
-    diagrammer = GraphVizDiagrammer(
-        multi_perspective_dfg,
-        start_activities,
-        end_activities,
-        visualize_frequency,
-        visualize_time,
-        visualize_cost,
-        cost_currency,
-        rankdir,
-    )
+    Note:
+        Mermaid diagrammer only supports saving the DFG diagram as a HTML file. It does not support viewing the diagram in interactive Python environments like Jupyter Notebooks and Google Colabs. Also the user needs internet connection to properly show the diagram in the HTML.
+    """
+    diagrammer = None
+    if diagram_tool == "graphviz":
+        diagrammer = GraphVizDiagrammer(
+            multi_perspective_dfg,
+            start_activities,
+            end_activities,
+            visualize_frequency,
+            visualize_time,
+            visualize_cost,
+            cost_currency,
+            rankdir,
+        )
+    else:
+        diagrammer = MermaidDiagrammer(
+            multi_perspective_dfg,
+            start_activities,
+            end_activities,
+            visualize_frequency,
+            visualize_time,
+            visualize_cost,
+            cost_currency,
+            rankdir,
+        )
+
     diagrammer.build_diagram()
     diagram_string = diagrammer.get_diagram_string()
     return diagram_string
@@ -130,6 +149,9 @@ def view_multi_perspective_dfg(
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
         cost_currency (str): The currency symbol to be displayed with the cost. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD" (top-down).
+
+    Note:
+        View of multi perspective DFGs are only supported for diagram strings made with graphviz.
     """
     dfg_string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,
@@ -167,6 +189,7 @@ def save_vis_multi_perspective_dfg(
     cost_currency: str = "USD",
     format: str = "png",
     rankdir: str = "TD",
+    diagram_tool: str = "graphviz",
 ):
     """
     Save a visual representation of a multi-perspective Directly-Follows Graph (DFG) to a file.
@@ -182,6 +205,10 @@ def save_vis_multi_perspective_dfg(
         cost_currency (str, optional): The currency used for cost visualization. Defaults to "USD".
         format (str, optional): The format of the visual representation file. Defaults to "png".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
+        diagram_tool (str | "graphviz" | "mermaid", optional): The diagram tool to use for building the diagram. Defaults to "graphviz".
+
+    Note:
+        Mermaid diagrammer only supports saving the DFG diagram as a HTML file. It does not support viewing the diagram in interactive Python environments like Jupyter Notebooks and Google Colabs. Also the user needs internet connection to properly show the diagram in the HTML.
     """
     dfg_string = get_multi_perspective_dfg_string(
         multi_perspective_dfg=multi_perspective_dfg,
@@ -192,10 +219,9 @@ def save_vis_multi_perspective_dfg(
         visualize_cost=visualize_cost,
         cost_currency=cost_currency,
         rankdir=rankdir,
+        diagram_tool=diagram_tool,
     )
-    tmp_file = tempfile.NamedTemporaryFile(suffix=".gv")
-    tmp_file.close()
-    src = Source(dfg_string, tmp_file.name, format=format)
-
-    render = src.render(cleanup=True)
-    shutil.copyfile(render, f"{file_path}.{format}")
+    if diagram_tool == "graphviz":
+        save_graphviz_diagram(dfg_string, file_path, format)
+    elif diagram_tool == "mermaid":
+        save_mermaid_diagram(dfg_string, file_path)

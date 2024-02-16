@@ -1,3 +1,5 @@
+r"""Functions to discover and visualize multi perspective DFGs"""
+
 from mpdfg.actions import (
     discover_multi_perspective_dfg,
     get_multi_perspective_dfg_string,

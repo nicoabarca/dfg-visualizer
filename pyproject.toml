@@ -1,13 +1,14 @@
 [project]
-name = "dfg-visualizer"
+name = "mpdfg"
 version = "0.0.1"
 dependencies = [
-  "pandas",
-  "numpy",
-  "graphviz",
-  "matplotlib",
-   "pyarrow",
+  "pandas>=2.2.0",
+  "numpy>=1.26.4",
+  "matplotlib>=3.8.2",
+  "pyarrow>=15.0.0",
+  "graphviz>=0.20.1",
 ]
+
 authors = [
   { name="Nicolás Abarca", email="nicoabarca@uc.cl" },
   { name="Ignacio Velasquez", email="iavelasquez@uc.cl" },
@@ -25,12 +26,14 @@ classifiers = [
 license = {file = "LICENSE"}
 
 [project.urls]
-Homepage = "https://github.com/nicoabarca/dfg-visualizer"
-Issues = "https://github.com/nicoabarca/dfg-visualizer/issues"
+Homepage = "https://github.com/nicoabarca/mpdfg"
+Issues = "https://github.com/nicoabarca/mpdfg/issues"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.setuptools]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

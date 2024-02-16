@@ -13,3 +13,17 @@ GRAPH_VIZ_LINK_DATA_ROW = (
 )
 
 GRAPH_VIZ_START_END_LINK = '{}->{}[penwidth="{}" color="gray75" fontsize="16" style="dashed" arrowhead="none" label=<\n<table cellpadding="0" cellborder="0" cellspacing="0" border="0">\n\t<tr><td bgcolor="white"><font face="arial" color="{}">{}</font></td></tr>\n</table>>]\n'
+
+MERMAID_UPPER_HTML = """<html>
+<body>
+    <pre class='mermaid'>
+"""
+
+MERMAID_LOWER_HTML = """
+    </pre>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>"""

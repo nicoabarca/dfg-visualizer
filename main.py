@@ -39,7 +39,7 @@ numbers_statistics = ["mean", "min", "max", "stdev", "median", "sum"]
     start_activities,
     end_activities,
 ) = mpdfg.discover_multi_perspective_dfg(
-    road_traffic_event_log,
+    blasting_event_log,
     calculate_cost=True,
     calculate_frequency=True,
     calculate_time=True,
@@ -54,7 +54,8 @@ mpdfg.save_vis_multi_perspective_dfg(
     file_path="road",
     visualize_frequency=True,
     visualize_time=True,
-    visualize_cost=False,
+    visualize_cost=True,
     format="png",
     rankdir="TB",
+    diagram_tool="mermaid",
 )

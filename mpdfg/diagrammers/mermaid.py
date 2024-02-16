@@ -1,6 +1,6 @@
 from mpdfg.utils.diagrammer import (
     dimensions_min_and_max,
-    hsl_color,
+    background_color,
     format_time,
     link_width,
     ids_mapping,
@@ -16,7 +16,7 @@ class MermaidDiagrammer:
         visualize_frequency: bool = True,
         visualize_time: bool = True,
         visualize_cost: bool = True,
-        cost_currency: str = "",
+        cost_currency: str = "USD",
         rankdir: str = "TB",
     ):
         self.dfg = dfg
@@ -32,8 +32,10 @@ class MermaidDiagrammer:
         self.link_styles_string = ""
         self.activities_id = {}
         self.dimensions_min_and_max = {}
+        self.set_activities_ids_mapping()
+        self.set_dimensions_min_and_max()
 
-    def set_ctivities_ids_mapping(self):
+    def set_activities_ids_mapping(self):
         self.activities_id = ids_mapping(self.dfg["activities"])
 
     def set_dimensions_min_and_max(self):
@@ -41,7 +43,7 @@ class MermaidDiagrammer:
             self.dfg["activities"], self.dfg["connections"]
         )
 
-    def build_string(self):
+    def build_diagram(self):
         self.add_titles()
         self.add_activities()
         self.add_connections()
@@ -84,7 +86,9 @@ class MermaidDiagrammer:
     def add_start_connections(self):
         start_connections_string = ""
         for activity, frequency in self.start_activities.items():
-            color = hsl_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
+            color = background_color(
+                frequency, "frequency", self.dimensions_min_and_max["frequency"]
+            ).replace("#", "")
             connection_string = f"start -.\"<span style='background-color: white; color: {color};'>{frequency}</span>\".- {self.activities_id[activity]}\n"
             start_connections_string += connection_string
 
@@ -95,7 +99,9 @@ class MermaidDiagrammer:
     def add_end_connections(self):
         end_connections_string = ""
         for activity, frequency in self.end_activities.items():
-            color = hsl_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
+            color = background_color(
+                frequency, "frequency", self.dimensions_min_and_max["frequency"]
+            ).replace("#", "")
             connections_string = f"{self.activities_id[activity]} -.\"<span style='background-color: white; color: {color};'>{frequency}</span>\".- complete\n"
             end_connections_string += connections_string
 
@@ -120,7 +126,9 @@ class MermaidDiagrammer:
             self.diagram_string += self.link_styles_string
 
     def activity_dimension_string(self, activity, dimension, dimension_measure):
-        color = hsl_color(dimension_measure, dimension, self.dimensions_min_and_max[dimension])
+        color = background_color(
+            dimension_measure, dimension, self.dimensions_min_and_max[dimension]
+        ).replace("#", "")
         html_string = "<div style='background-color: {}; color: white; padding: 5px; border-bottom: 1px solid black;'>&nbsp;{}&nbsp;</div>"
         content = None
         if dimension == "frequency":
@@ -135,7 +143,9 @@ class MermaidDiagrammer:
         return html_string if content else ""
 
     def build_connection_string(self, dimension, dimension_measure):
-        color = hsl_color(dimension_measure, dimension, self.dimensions_min_and_max[dimension])
+        color = background_color(
+            dimension_measure, dimension, self.dimensions_min_and_max[dimension]
+        ).replace("#", "")
         html_string = "<span style='background-color: white; color: {};'>{}</span></br>"
         content = None
         if dimension == "frequency" and self.visualize_frequency:
@@ -149,5 +159,5 @@ class MermaidDiagrammer:
     def frequency_measure(self, dimension_measure):
         return f"({dimension_measure})" if self.visualize_frequency else ""
 
-    def get_string(self):
+    def get_diagram_string(self):
         return self.diagram_string
