@@ -1,14 +1,14 @@
 from mpdfg.utils.constants import (
-    GRAPH_VIZ_RANKDIR,
-    GRAPH_VIZ_START_NODE,
-    GRAPH_VIZ_END_NODE,
-    GRAPH_VIZ_NODE,
-    GRAPH_VIZ_NODE_DATA,
-    GRAPH_VIZ_NODE_DATA_ROW,
-    GRAPH_VIZ_LINK,
-    GRAPH_VIZ_LINK_DATA,
-    GRAPH_VIZ_LINK_DATA_ROW,
-    GRAPH_VIZ_START_END_LINK,
+    GRAPHVIZ_RANKDIR,
+    GRAPHVIZ_START_NODE,
+    GRAPHVIZ_END_NODE,
+    GRAPHVIZ_NODE,
+    GRAPHVIZ_NODE_DATA,
+    GRAPHVIZ_NODE_DATA_ROW,
+    GRAPHVIZ_LINK,
+    GRAPHVIZ_LINK_DATA,
+    GRAPHVIZ_LINK_DATA_ROW,
+    GRAPHVIZ_START_END_LINK,
 )
 
 from mpdfg.utils.diagrammer import (
@@ -62,9 +62,9 @@ class GraphVizDiagrammer:
         self.add_graph_type()
 
     def add_config(self):
-        self.diagram_string += GRAPH_VIZ_RANKDIR.format(self.rankdir)
-        self.diagram_string += GRAPH_VIZ_START_NODE
-        self.diagram_string += GRAPH_VIZ_END_NODE
+        self.diagram_string += GRAPHVIZ_RANKDIR.format(self.rankdir)
+        self.diagram_string += GRAPHVIZ_START_NODE
+        self.diagram_string += GRAPHVIZ_END_NODE
 
     def add_activities_string(self):
         for activity in self.dfg["activities"].keys():
@@ -72,14 +72,14 @@ class GraphVizDiagrammer:
             self.diagram_string += activity_string
 
     def build_activity_string(self, activity):
-        dimensions_string = ""
+        dimensions_string = " "
         for dimension, measure in self.dfg["activities"][activity].items():
             bgcolor, content = self.activity_string_based_on_data(activity, dimension, measure)
             if content != "":
-                dimensions_string += GRAPH_VIZ_NODE_DATA_ROW.format(bgcolor, content)
+                dimensions_string += GRAPHVIZ_NODE_DATA_ROW.format(bgcolor, content)
 
-        node_data_string = GRAPH_VIZ_NODE_DATA.format(dimensions_string)
-        return GRAPH_VIZ_NODE.format(self.activities_ids[activity], node_data_string)
+        node_data_string = GRAPHVIZ_NODE_DATA.format(dimensions_string)
+        return GRAPHVIZ_NODE.format(self.activities_ids[activity], node_data_string)
 
     def activity_string_based_on_data(self, activity, dimension, measure):
         bgcolor = background_color(measure, dimension, self.dimensions_min_and_max[dimension])
@@ -95,6 +95,7 @@ class GraphVizDiagrammer:
 
         elif dimension == "cost" and self.visualize_cost:
             content = f"{'{0:,}'.format(measure)} {self.cost_currency}"
+            print("cost: ", content)
 
         return bgcolor, content
 
@@ -118,7 +119,7 @@ class GraphVizDiagrammer:
                 else "black"
             )
 
-            connection_string = GRAPH_VIZ_START_END_LINK.format(
+            connection_string = GRAPHVIZ_START_END_LINK.format(
                 "start",
                 activity_id,
                 penwidth,
@@ -139,7 +140,7 @@ class GraphVizDiagrammer:
                 if self.visualize_frequency
                 else "black"
             )
-            connection_string = GRAPH_VIZ_START_END_LINK.format(
+            connection_string = GRAPHVIZ_START_END_LINK.format(
                 activity_id,
                 "complete",
                 penwidth,
@@ -149,11 +150,11 @@ class GraphVizDiagrammer:
             self.diagram_string += connection_string
 
     def build_connection_string(self, connection):
-        dimensions_string = ""
+        dimensions_string = " "
         for dimension, measure in self.dfg["connections"][connection].items():
             bgcolor, content = self.connection_string_based_on_data(dimension, measure)
             if content != "":
-                dimensions_string += GRAPH_VIZ_LINK_DATA_ROW.format(bgcolor, content)
+                dimensions_string += GRAPHVIZ_LINK_DATA_ROW.format(bgcolor, content)
 
         penwidth = (
             link_width(
@@ -164,9 +165,16 @@ class GraphVizDiagrammer:
             else 1
         )
 
-        link_data_string = GRAPH_VIZ_LINK_DATA.format(dimensions_string)
-
-        return GRAPH_VIZ_LINK.format(
+        link_data_string = GRAPHVIZ_LINK_DATA.format(dimensions_string)
+        print(
+            GRAPHVIZ_LINK.format(
+                self.activities_ids[connection[0]],
+                self.activities_ids[connection[1]],
+                penwidth,
+                link_data_string,
+            )
+        )
+        return GRAPHVIZ_LINK.format(
             self.activities_ids[connection[0]],
             self.activities_ids[connection[1]],
             penwidth,
