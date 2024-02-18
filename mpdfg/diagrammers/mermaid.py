@@ -71,7 +71,7 @@ class MermaidDiagrammer:
     def add_connections(self):
         self.add_start_connections()
         for connection, dimensions in self.dfg["connections"].items():
-            connections_string = ""
+            connections_string = " "
             for dimension in dimensions:
                 dimension_measure = self.dfg["connections"][connection][dimension]
                 connections_string += self.build_connection_string(dimension, dimension_measure)

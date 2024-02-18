@@ -1,15 +1,11 @@
 from mpdfg.utils.constants import (
-    GRAPHVIZ_RANKDIR,
-    GRAPHVIZ_START_NODE,
-    GRAPHVIZ_END_NODE,
-    GRAPHVIZ_NODE,
     GRAPHVIZ_NODE_DATA,
     GRAPHVIZ_NODE_DATA_ROW,
-    GRAPHVIZ_LINK,
     GRAPHVIZ_LINK_DATA,
     GRAPHVIZ_LINK_DATA_ROW,
-    GRAPHVIZ_START_END_LINK,
+    GRAPHVIZ_START_END_LINK_DATA,
 )
+import graphviz
 
 from mpdfg.utils.diagrammer import (
     ids_mapping,
@@ -42,7 +38,7 @@ class GraphVizDiagrammer:
         self.rankdir = rankdir
         self.activities_ids = {}
         self.dimensions_min_and_max = {}
-        self.diagram_string = ""
+        self.diagram = graphviz.Digraph("mpdfg", comment="Multi Perspective DFG")
 
         self.set_activities_ids_mapping()
         self.set_dimensions_min_and_max()
@@ -57,31 +53,49 @@ class GraphVizDiagrammer:
 
     def build_diagram(self):
         self.add_config()
-        self.add_activities_string()
-        self.add_connections_string()
-        self.add_graph_type()
+        self.add_activities()
+        self.add_connections()
 
     def add_config(self):
-        self.diagram_string += GRAPHVIZ_RANKDIR.format(self.rankdir)
-        self.diagram_string += GRAPHVIZ_START_NODE
-        self.diagram_string += GRAPHVIZ_END_NODE
+        self.diagram.graph_attr["rankdir"] = self.rankdir
+        self.diagram.node(
+            "start",
+            label="&#9650;",
+            shape="circle",
+            fontsize="20",
+            margin="0.05",
+            style="filled",
+            fillcolor="green",
+        )
+        self.diagram.node(
+            "complete",
+            label="&#9632;",
+            shape="circle",
+            fontsize="20",
+            margin="0.05",
+            style="filled",
+            fillcolor="green",
+        )
 
-    def add_activities_string(self):
+    def add_activities(self):
         for activity in self.dfg["activities"].keys():
-            activity_string = self.build_activity_string(activity)
-            self.diagram_string += activity_string
+            self.add_activity_node(activity)
 
-    def build_activity_string(self, activity):
-        dimensions_string = " "
+    def add_activity_node(self, activity):
+        activity_id = self.activities_ids[activity]
+        label = self.build_activity_label(activity)
+        self.diagram.node(activity_id, label=f"<{label}>", shape="none")
+
+    def build_activity_label(self, activity):
+        dimensions_rows_data = " "
         for dimension, measure in self.dfg["activities"][activity].items():
-            bgcolor, content = self.activity_string_based_on_data(activity, dimension, measure)
+            bgcolor, content = self.activity_label_data(activity, dimension, measure)
             if content != "":
-                dimensions_string += GRAPHVIZ_NODE_DATA_ROW.format(bgcolor, content)
+                dimensions_rows_data += GRAPHVIZ_NODE_DATA_ROW.format(bgcolor, content)
 
-        node_data_string = GRAPHVIZ_NODE_DATA.format(dimensions_string)
-        return GRAPHVIZ_NODE.format(self.activities_ids[activity], node_data_string)
+        return GRAPHVIZ_NODE_DATA.format(dimensions_rows_data)
 
-    def activity_string_based_on_data(self, activity, dimension, measure):
+    def activity_label_data(self, activity, dimension, measure):
         bgcolor = background_color(measure, dimension, self.dimensions_min_and_max[dimension])
         content = ""
         if dimension == "frequency":
@@ -95,67 +109,47 @@ class GraphVizDiagrammer:
 
         elif dimension == "cost" and self.visualize_cost:
             content = f"{'{0:,}'.format(measure)} {self.cost_currency}"
-            print("cost: ", content)
 
         return bgcolor, content
 
-    def add_connections_string(self):
-        self.add_start_and_end_connections_string()
-        for connection in self.dfg["connections"].keys():
-            connection_string = self.build_connection_string(connection)
-            self.diagram_string += connection_string
+    def add_connections(self):
+        self.add_extreme_connection_edges("start")
+        self.add_extreme_connection_edges("complete")
+        for connection in self.dfg["connections"]:
+            self.add_connection_edge(connection)
 
-    def add_start_and_end_connections_string(self):
-        for activity, frequency in self.start_activities.items():
+    def add_extreme_connection_edges(self, extreme):
+        activities = self.start_activities if extreme == "start" else self.end_activities
+
+        for activity, frequency in activities.items():
             activity_id = self.activities_ids[activity]
+            frequency = frequency if self.visualize_frequency else " "
             penwidth = (
                 link_width(frequency, self.dimensions_min_and_max["frequency"])
                 if self.visualize_frequency
                 else 1
             )
-            bgcolor = (
+            color = (
                 background_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
                 if self.visualize_frequency
                 else "black"
             )
-
-            connection_string = GRAPHVIZ_START_END_LINK.format(
-                "start",
-                activity_id,
-                penwidth,
-                bgcolor,
-                "{0:,}".format(frequency) if self.visualize_frequency else " ",
+            self.diagram.edge(
+                "start" if extreme == "start" else activity_id,
+                "complete" if extreme == "complete" else activity_id,
+                penwidth=str(penwidth),
+                color="gray75",
+                fontsize="16",
+                style="dashed",
+                arrowhead="none",
+                label=f"<{GRAPHVIZ_START_END_LINK_DATA.format(color, frequency)}>",
             )
-            self.diagram_string += connection_string
 
-        for activity, frequency in self.end_activities.items():
-            activity_id = self.activities_ids[activity]
-            penwidth = (
-                link_width(frequency, self.dimensions_min_and_max["frequency"])
-                if self.visualize_frequency
-                else 1
-            )
-            bgcolor = (
-                background_color(frequency, "frequency", self.dimensions_min_and_max["frequency"])
-                if self.visualize_frequency
-                else "black"
-            )
-            connection_string = GRAPHVIZ_START_END_LINK.format(
-                activity_id,
-                "complete",
-                penwidth,
-                bgcolor,
-                "{0:,}".format(frequency) if self.visualize_frequency else " ",
-            )
-            self.diagram_string += connection_string
-
-    def build_connection_string(self, connection):
-        dimensions_string = " "
-        for dimension, measure in self.dfg["connections"][connection].items():
-            bgcolor, content = self.connection_string_based_on_data(dimension, measure)
-            if content != "":
-                dimensions_string += GRAPHVIZ_LINK_DATA_ROW.format(bgcolor, content)
-
+    def add_connection_edge(self, connection):
+        activity, following_activity = (
+            self.activities_ids[connection[0]],
+            self.activities_ids[connection[1]],
+        )
         penwidth = (
             link_width(
                 self.dfg["connections"][connection]["frequency"],
@@ -164,24 +158,24 @@ class GraphVizDiagrammer:
             if self.visualize_frequency
             else 1
         )
-
-        link_data_string = GRAPHVIZ_LINK_DATA.format(dimensions_string)
-        print(
-            GRAPHVIZ_LINK.format(
-                self.activities_ids[connection[0]],
-                self.activities_ids[connection[1]],
-                penwidth,
-                link_data_string,
+        if self.visualize_frequency and self.visualize_time:
+            label = self.build_connection_label(connection)
+            self.diagram.edge(
+                activity, following_activity, penwidth=str(penwidth), label=f"<{label}>"
             )
-        )
-        return GRAPHVIZ_LINK.format(
-            self.activities_ids[connection[0]],
-            self.activities_ids[connection[1]],
-            penwidth,
-            link_data_string,
-        )
+        else:
+            self.diagram.edge(activity, following_activity, penwidth=str(penwidth))
 
-    def connection_string_based_on_data(self, dimension, measure):
+    def build_connection_label(self, connection):
+        dimensions_string = " "
+        for dimension, measure in self.dfg["connections"][connection].items():
+            bgcolor, content = self.connection_label_data(dimension, measure)
+            if content != "":
+                dimensions_string += GRAPHVIZ_LINK_DATA_ROW.format(bgcolor, content)
+
+        return GRAPHVIZ_LINK_DATA.format(dimensions_string)
+
+    def connection_label_data(self, dimension, measure):
         bgcolor = background_color(measure, dimension, self.dimensions_min_and_max[dimension])
         content = ""
         if dimension == "frequency":
@@ -191,8 +185,5 @@ class GraphVizDiagrammer:
 
         return bgcolor, content
 
-    def add_graph_type(self):
-        self.diagram_string = "digraph {\n" + self.diagram_string + "}"
-
     def get_diagram_string(self):
-        return self.diagram_string
+        return self.diagram.source
