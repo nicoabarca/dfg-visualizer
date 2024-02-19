@@ -59,9 +59,9 @@ event_log = mpdfg.log_formatter(raw_event_log, format_dictionary)
     calculate_cost=True,
     calculate_frequency=True,
     calculate_time=True,
-    frequency_statistic="absolute-activity",
-    time_statistic="mean",
-    cost_statistic="mean",
+    frequency_statistic="absolute-activity", # or absolute-case, relative-activity, relative-case
+    time_statistic="mean", # or sum, max, min, stdev, median
+    cost_statistic="mean", # or sum, max, min, stdev, median
 )
 
 ```
@@ -75,8 +75,8 @@ mpdfg_string = mpdfg.get_multi_perspective_dfg_string(
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
-    rankdir="TB",
-    diagram_tool="graphviz",
+    rankdir="TB", # or BT, LR, RL, etc.
+    diagram_tool="graphviz", # or mermaid
 )
 
 ```
@@ -93,9 +93,9 @@ mpdfg.view_multi_perspective_dfg(
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
-    format="png",
-    rankdir="TB",
-    diagram_tool="grahpviz",
+    format="png", # or pdf
+    rankdir="TB", # or BT, LR, RL, etc.
+    diagram_tool="grahpviz", # or mermaid
 )
 ```
 ### Save the generated DFG diagram
@@ -109,8 +109,8 @@ mpdfg.save_vis_multi_perspective_dfg(
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
-    format="png",
-    rankdir="TB",
-    diagram_tool="graphviz",
+    format="png", # or pdf, webp, svg, etc.
+    rankdir="TB", # or BT, LR, RL, etc.
+    diagram_tool="graphviz", # or mermaid
 )
 ```
