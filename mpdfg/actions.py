@@ -1,10 +1,10 @@
 import pandas as pd
 import tempfile
 import shutil
+from graphviz import Source
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from typing import Tuple
-from graphviz import Source
 from mpdfg.utils.actions import save_graphviz_diagram, save_mermaid_diagram
 from mpdfg.dfg import DirectlyFollowsGraph
 from mpdfg.dfg_parameters import DirectlyFollowsGraphParameters
@@ -136,9 +136,10 @@ def view_multi_perspective_dfg(
     visualize_cost: bool = True,
     cost_currency: str = "USD",
     rankdir: str = "TD",
+    figsize: Tuple = (12, 12),
 ):
     """
-    Visualizes a multi-perspective Directly-Follows Graph (DFG) using graphviz.
+    Visualizes a multi-perspective Directly-Follows Graph (DFG) using graphviz in interactive Python environments.
 
     Args:
         multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
@@ -149,6 +150,7 @@ def view_multi_perspective_dfg(
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
         cost_currency (str): The currency symbol to be displayed with the cost. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD" (top-down).
+        figsize (Tuple, optional): The height and width of the displayed diagram. Defaults to (12, 12).
 
     Note:
         View of multi perspective DFGs are only supported for diagram strings made with graphviz.
@@ -163,7 +165,6 @@ def view_multi_perspective_dfg(
         cost_currency=cost_currency,
         rankdir=rankdir,
     )
-
     tmp_file = tempfile.NamedTemporaryFile(suffix=".gv")
     tmp_file.close()
     src = Source(dfg_string, tmp_file.name, format="png")
@@ -172,6 +173,7 @@ def view_multi_perspective_dfg(
     shutil.copyfile(render, tmp_file.name)
 
     img = mpimg.imread(tmp_file.name)
+    plt.figure(figsize=figsize)
     plt.axis("off")
     plt.tight_layout(pad=0, w_pad=0, h_pad=0)
     plt.imshow(img)

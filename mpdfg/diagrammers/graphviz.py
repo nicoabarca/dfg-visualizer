@@ -74,7 +74,7 @@ class GraphVizDiagrammer:
             fontsize="20",
             margin="0.05",
             style="filled",
-            fillcolor="green",
+            fillcolor="red",
         )
 
     def add_activities(self):
