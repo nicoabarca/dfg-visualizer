@@ -1,6 +1,6 @@
 # Multi Perspective DFG Visualizer
 
- A package to visualize multi perspective Directly-Follows Graphs (DFG) based on event logs. It aims to provide insights into the relationships and dependencies between different perspectives in a given process.
+ A package to visualize multi perspective Directly-Follows Graphs (DFG) based on event logs. It aims to provide insights into the relationships and dependencies between different perspectives in a given process. The diagrams are generated via [Graphviz](https://www.graphviz.org) and also there is an option to create a diagram using [Mermaid](https://mermaid.js.org) syntaxis.
 
 
 # Installation
@@ -114,3 +114,7 @@ mpdfg.save_vis_multi_perspective_dfg(
     diagram_tool="graphviz", # or mermaid
 )
 ```
+
+# Examples
+
+Checkout [Examples](https://github.com/nicoabarca/mpdfg/blob/main/examples) to see the package being used to visualize an event log of a mining process.
