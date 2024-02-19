@@ -95,7 +95,7 @@ mpdfg.view_multi_perspective_dfg(
     visualize_cost=True,
     format="png", # or pdf
     rankdir="TB", # or BT, LR, RL, etc.
-    diagram_tool="grahpviz", # or mermaid
+    diagram_tool="graphviz", # only graphviz available for this function
 )
 ```
 ### Save the generated DFG diagram
