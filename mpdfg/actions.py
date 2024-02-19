@@ -182,7 +182,7 @@ def save_vis_multi_perspective_dfg(
     multi_perspective_dfg: dict,
     start_activities: dict,
     end_activities: dict,
-    file_path: str,
+    file_name: str,
     visualize_frequency: bool = True,
     visualize_time: bool = True,
     visualize_cost: bool = True,
@@ -198,7 +198,7 @@ def save_vis_multi_perspective_dfg(
         multi_perspective_dfg (dict): The multi-perspective DFG.
         start_activities (dict): A dictionary mapping start activities to their respective labels.
         end_activities (dict): A dictionary mapping end activities to their respective labels.
-        file_path (str): The path to save the visual representation file.
+        file_name (str): The path to save the visual representation file.
         visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
         visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
@@ -222,6 +222,8 @@ def save_vis_multi_perspective_dfg(
         diagram_tool=diagram_tool,
     )
     if diagram_tool == "graphviz":
-        save_graphviz_diagram(dfg_string, file_path, format)
+        save_graphviz_diagram(dfg_string, file_name, format)
     elif diagram_tool == "mermaid":
-        save_mermaid_diagram(dfg_string, file_path)
+        save_mermaid_diagram(dfg_string, file_name)
+    else:
+        print("Invalid diagram tool. Options are graphviz and mermaid.")

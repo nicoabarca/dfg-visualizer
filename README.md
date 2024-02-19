@@ -82,7 +82,7 @@ mpdfg_string = mpdfg.get_multi_perspective_dfg_string(
 ```
 
 ### View the generated DFG diagram
-Allows the user to view the diagram in interactive Python environments like Jupyter Notebooks and Google Colabs.
+Allows the user to view the diagram in interactive Python environments like Jupyter and Google Colab.
 
 ```py
 mpdfg.view_multi_perspective_dfg(
