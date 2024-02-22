@@ -158,7 +158,7 @@ class GraphVizDiagrammer:
             if self.visualize_frequency
             else 1
         )
-        if self.visualize_frequency and self.visualize_time:
+        if self.visualize_frequency or self.visualize_time:
             label = self.build_connection_label(connection)
             self.diagram.edge(
                 activity, following_activity, penwidth=str(penwidth), label=f"<{label}>"

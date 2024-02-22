@@ -133,6 +133,7 @@ class MermaidDiagrammer:
         content = None
         if dimension == "frequency":
             content = f"{activity} {self.frequency_measure(dimension_measure)}"
+            color = color if self.visualize_frequency else "royalblue"
             html_string = html_string.format(color, content)
         elif dimension == "time" and self.visualize_time:
             content = format_time(dimension_measure)
