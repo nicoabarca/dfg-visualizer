@@ -1,11 +1,11 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import tempfile
 import shutil
 from graphviz import Source
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 from typing import Tuple
-from mpdfg.utils.actions import save_graphviz_diagram, save_mermaid_diagram
+from mpdfg.utils.actions import save_graphviz_diagram, save_mermaid_diagram, image_size
 from mpdfg.dfg import DirectlyFollowsGraph
 from mpdfg.dfg_parameters import DirectlyFollowsGraphParameters
 from mpdfg.diagrammers.graphviz import GraphVizDiagrammer
@@ -39,9 +39,9 @@ def discover_multi_perspective_dfg(
         calculate_frequency (bool, optional): Whether to calculate activity frequencies. Defaults to True.
         calculate_time (bool, optional): Whether to calculate activity times. Defaults to True.
         calculate_cost (bool, optional): Whether to calculate activity costs. Defaults to True.
-        frequency_statistic (str, optional): The statistic to use for activity frequencies. Defaults to "absolute-activity".
-        time_statistic (str, optional): The statistic to use for activity times. Defaults to "mean".
-        cost_statistic (str, optional): The statistic to use for activity costs. Defaults to "mean".
+        frequency_statistic (str , optional): The statistic to use for activity frequencies. Valid values are "absolute-activity", "absolute-case", "relative-case" and "relative-activity". Defaults to "absolute-activity".
+        time_statistic (str, optional): The statistic to use for activity times. Valid values are "mean", "sum", "max", "min", "median" and "stdev". Defaults to "mean".
+        cost_statistic (str, optional): The statistic to use for activity costs. Valid values are "mean, "sum", "max", "min", "median" and "stdev". Defaults to "mean".
 
     Returns:
         Tuple[dict, dict, dict]: A tuple containing the multi-perspective DFG, start activities, and end activities.
@@ -90,7 +90,7 @@ def get_multi_perspective_dfg_string(
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
         cost_currency (str, optional): The currency symbol to use for cost visualization. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
-        diagram_tool (str | "graphviz" | "mermaid", optional): The diagram_tool to use for building the diagram. Defaults to "graphviz".
+        diagram_tool (str, optional): The diagram_tool to use for building the diagram. Valid values are "graphviz" and "mermaid". Defaults to "graphviz".
 
     Returns:
         str: The string representation of the multi-perspective DFG diagram.
@@ -136,7 +136,7 @@ def view_multi_perspective_dfg(
     visualize_cost: bool = True,
     cost_currency: str = "USD",
     rankdir: str = "TD",
-    figsize: Tuple = (12, 12),
+    figsize: Tuple = (20, 20),
 ):
     """
     Visualizes a multi-perspective Directly-Follows Graph (DFG) using graphviz in interactive Python environments.
@@ -148,9 +148,9 @@ def view_multi_perspective_dfg(
         visualize_frequency (bool, optional): Whether to visualize the frequency of activities. Defaults to True.
         visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
-        cost_currency (str): The currency symbol to be displayed with the cost. Defaults to "USD".
+        cost_currency (str, optional): The currency symbol to be displayed with the cost. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD" (top-down).
-        figsize (Tuple, optional): The height and width of the displayed diagram. Defaults to (12, 12).
+        figsize (Tuple, optional): The height and width of the displayed diagram. Defaults to (20, 20).
 
     Note:
         View of multi perspective DFGs are only supported for diagram strings made with graphviz.
@@ -171,6 +171,7 @@ def view_multi_perspective_dfg(
 
     render = src.render(cleanup=True)
     shutil.copyfile(render, tmp_file.name)
+    figsize = image_size()
 
     img = mpimg.imread(tmp_file.name)
     plt.figure(figsize=figsize)
