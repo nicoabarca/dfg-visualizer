@@ -1,6 +1,6 @@
 # Multi Perspective DFG Visualizer
 
- A package to visualize multi perspective Directly-Follows Graphs (DFG) based on event logs. It aims to provide insights into the relationships and dependencies between different perspectives in a given process. The diagrams are generated via [Graphviz](https://www.graphviz.org) and also there is an option to create a diagram using [Mermaid](https://mermaid.js.org) syntaxis.
+ A package to visualize multi perspective Directly-Follows Graphs (DFG) based on event logs. It aims to provide insights into the relationships and dependencies between different perspectives in a given process. The diagrams are generated via [Graphviz](https://www.graphviz.org) and  [Mermaid](https://mermaid.js.org).
 
 
 # Installation
@@ -8,7 +8,7 @@ This package runs under Python 3.9+, use [pip](https://pip.pypa.io/en/stable/) t
 ```sh
 pip install mpdfg
 ```
-To render and save a generated diagram, you also need to install [Graphviz](https://www.graphviz.org)
+To render and save generated diagrams, you will also need to install [Graphviz](https://www.graphviz.org)
 
 # Quickstart
 

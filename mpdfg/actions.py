@@ -136,7 +136,7 @@ def view_multi_perspective_dfg(
     visualize_cost: bool = True,
     cost_currency: str = "USD",
     rankdir: str = "TD",
-    figsize: Tuple = (20, 20),
+    figsize: Tuple = None,
 ):
     """
     Visualizes a multi-perspective Directly-Follows Graph (DFG) using graphviz in interactive Python environments.
@@ -150,7 +150,7 @@ def view_multi_perspective_dfg(
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
         cost_currency (str, optional): The currency symbol to be displayed with the cost. Defaults to "USD".
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD" (top-down).
-        figsize (Tuple, optional): The height and width of the displayed diagram. Defaults to (20, 20).
+        figsize (Tuple, optional): The width and height of the displayed diagram. Defaults to None.
 
     Note:
         View of multi perspective DFGs are only supported for diagram strings made with graphviz.
@@ -171,7 +171,10 @@ def view_multi_perspective_dfg(
 
     render = src.render(cleanup=True)
     shutil.copyfile(render, tmp_file.name)
-    figsize = image_size()
+
+    if not figsize:
+        figsize = image_size(multi_perspective_dfg)
+        print("this if")
 
     img = mpimg.imread(tmp_file.name)
     plt.figure(figsize=figsize)
@@ -206,7 +209,7 @@ def save_vis_multi_perspective_dfg(
         visualize_time (bool, optional): Whether to visualize the time of activities. Defaults to True.
         visualize_cost (bool, optional): Whether to visualize the cost of activities. Defaults to True.
         cost_currency (str, optional): The currency used for cost visualization. Defaults to "USD".
-        format (str, optional): The format of the visual representation file. Defaults to "png".
+        format (str, optional): The format of the visual representation file. Defaults to "png". More output formats can be found at https://graphviz.org/docs/outputs
         rankdir (str, optional): The direction of the graph layout. Defaults to "TD".
         diagram_tool (str | "graphviz" | "mermaid", optional): The diagram tool to use for building the diagram. Defaults to "graphviz".
 
