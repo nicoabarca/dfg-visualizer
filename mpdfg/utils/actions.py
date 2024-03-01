@@ -26,5 +26,4 @@ def image_size(dfg):
     edge_length = 5
     estimated_width = sqrt(number_of_nodes) * node_size
     estimated_height = sqrt(number_of_nodes) * node_size + edge_length * 3
-    print(estimated_width, estimated_height)
     return (estimated_width, estimated_height)
