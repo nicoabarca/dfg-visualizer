@@ -173,8 +173,7 @@ def view_multi_perspective_dfg(
     shutil.copyfile(render, tmp_file.name)
 
     if not figsize:
-        figsize = image_size(multi_perspective_dfg)
-        print("this if")
+        figsize = image_size(multi_perspective_dfg, rankdir)
 
     img = mpimg.imread(tmp_file.name)
     plt.figure(figsize=figsize)

@@ -20,10 +20,15 @@ def save_mermaid_diagram(dfg_string: str, file_path: str):
         f.write(diagram_string)
 
 
-def image_size(dfg):
+def image_size(dfg, rankdir):
+    horizontal_directions = ["LR", "RL"]
     number_of_nodes = len(dfg["activities"].keys())
     node_size = 4
     edge_length = 5
     estimated_width = sqrt(number_of_nodes) * node_size
     estimated_height = sqrt(number_of_nodes) * node_size + edge_length * 3
+    if rankdir in horizontal_directions:
+        estimated_width = sqrt(number_of_nodes) * node_size * 3.5
+        estimated_height = sqrt(number_of_nodes) * node_size + edge_length * 30
+        estimated_width, estimated_height = estimated_height, estimated_width
     return (estimated_width, estimated_height)

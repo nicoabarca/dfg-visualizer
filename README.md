@@ -93,7 +93,6 @@ mpdfg.view_multi_perspective_dfg(
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
-    format="png", # or pdf
     rankdir="TB", # or BT, LR, RL, etc.
     diagram_tool="graphviz", # only graphviz available for this function
 )
