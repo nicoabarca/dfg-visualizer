@@ -22,17 +22,17 @@ def log_formatter(log: pd.DataFrame, format: dict, timestamp_format: Union[str, 
         }
     )
 
-    if format["start_timestamp"] == "":
+    if "start_timestamp" not in format or format["start_timestamp"] == "":
         log["start_timestamp"] = log["time:timestamp"].copy()
     else:
         log = log.rename(columns={format["start_timestamp"]: "start_timestamp"})
 
-    if format["cost:total"] == "":
+    if "cost:total" not in format or format["cost:total"] == "":
         log["cost:total"] = 0
     else:
         log = log.rename(columns={format["cost:total"]: "cost:total"})
 
-    if format["org:resource"] == "":
+    if "org:resource" not in format or format["org:resource"] == "":
         log["org:resoure"] = ""
     else:
         log = log.rename(columns={format["org:resource"]: "org:resource"})

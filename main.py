@@ -53,11 +53,11 @@ mpdfg.save_vis_multi_perspective_dfg(
     multi_perspective_dfg,
     start_activities,
     end_activities,
-    file_path="road",
+    file_name="data/test",
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
     format="png",
     rankdir="TB",
-    diagram_tool="mermaid",
+    diagram_tool="graphviz",
 )
