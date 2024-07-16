@@ -6,6 +6,7 @@ import shutil
 from graphviz import Source
 from typing import Tuple
 from mpdfg.utils.actions import save_graphviz_diagram, save_mermaid_diagram, image_size
+from mpdfg.utils.filters import filter_dfg_activities, filter_dfg_paths
 from mpdfg.dfg import DirectlyFollowsGraph
 from mpdfg.dfg_parameters import DirectlyFollowsGraphParameters
 from mpdfg.diagrammers.graphviz import GraphVizDiagrammer
@@ -66,6 +67,56 @@ def discover_multi_perspective_dfg(
     end_activities = dfg.get_end_activities()
     return multi_perspective_dfg, start_activities, end_activities
 
+
+def filter_multi_perspective_dfg_activities(
+    percentage: float,
+    multi_perspective_dfg: dict,
+    start_activities: dict,
+    end_activities: dict,
+    sort_by: str = "frequency",
+    ascending: bool = True
+):
+    """
+    Filters activities of a multi-perspective Directly-Follows Graph (DFG) diagram.
+
+    Args:
+        percentage (float): A number between 0 and 100 indicating the desired percentage of activities to visualize
+        multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
+        start_activities (dict): A dictionary containing the start activities of the DFG.
+        end_activities (dict): A dictionary containing the end activities of the DFG.
+        sort_by (str, optional): The statistic that should be used to filter the diagram. Valid values are "frequency", "time", and "cost". Defaults to "frequency".
+        ascending (bool, optional): Whether to filter activities starting with those with the lowest statistic, or the highest. Defaults to True.
+
+    Returns:
+        str: The filtered multi-perspective DFG.
+    """
+    filtered_dfg = filter_dfg_activities(percentage, multi_perspective_dfg, start_activities, end_activities, sort_by, ascending)
+    return filtered_dfg
+
+def filter_multi_perspective_dfg_paths(
+    percentage: float,
+    multi_perspective_dfg: dict,
+    start_activities: dict,
+    end_activities: dict,
+    sort_by: str = "frequency",
+    ascending: bool = True
+):
+    """
+    Filters paths of a multi-perspective Directly-Follows Graph (DFG) diagram.
+
+    Args:
+        percentage (float): A number between 0 and 100 indicating the desired percentage of paths to visualize
+        multi_perspective_dfg (dict): A dictionary representing the multi-perspective DFG.
+        start_activities (dict): A dictionary containing the start activities of the DFG.
+        end_activities (dict): A dictionary containing the end activities of the DFG.
+        sort_by (str, optional): The statistic that should be used to filter the diagram. Valid values are "frequency" and "time". Defaults to "frequency".
+        ascending (bool, optional): Whether to filter paths starting with those with the lowest statistic, or the highest. Defaults to True.
+
+    Returns:
+        str: The filtered multi-perspective DFG.
+    """
+    filtered_dfg = filter_dfg_paths(percentage, multi_perspective_dfg, start_activities, end_activities, sort_by, ascending)
+    return filtered_dfg
 
 def get_multi_perspective_dfg_string(
     multi_perspective_dfg: dict,
