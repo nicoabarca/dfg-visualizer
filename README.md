@@ -89,12 +89,10 @@ mpdfg.view_multi_perspective_dfg(
     multi_perspective_dfg,
     start_activities,
     end_activities,
-    file_path="diagram",
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
     rankdir="TB", # or BT, LR, RL, etc.
-    diagram_tool="graphviz", # only graphviz available for this function
 )
 ```
 ### Save the generated DFG diagram
@@ -104,7 +102,7 @@ mpdfg.save_vis_multi_perspective_dfg(
     multi_perspective_dfg,
     start_activities,
     end_activities,
-    file_path="diagram",
+    file_name="diagram",
     visualize_frequency=True,
     visualize_time=True,
     visualize_cost=True,
