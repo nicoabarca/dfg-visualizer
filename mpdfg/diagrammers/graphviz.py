@@ -1,18 +1,18 @@
-from mpdfg.utils.constants import (
-    GRAPHVIZ_NODE_DATA,
-    GRAPHVIZ_NODE_DATA_ROW,
-    GRAPHVIZ_LINK_DATA,
-    GRAPHVIZ_LINK_DATA_ROW,
-    GRAPHVIZ_START_END_LINK_DATA,
-)
 import graphviz
 
+from mpdfg.utils.constants import (
+    GRAPHVIZ_LINK_DATA,
+    GRAPHVIZ_LINK_DATA_ROW,
+    GRAPHVIZ_NODE_DATA,
+    GRAPHVIZ_NODE_DATA_ROW,
+    GRAPHVIZ_START_END_LINK_DATA,
+)
 from mpdfg.utils.diagrammer import (
-    ids_mapping,
+    background_color,
     dimensions_min_and_max,
     format_time,
+    ids_mapping,
     link_width,
-    background_color,
 )
 
 
@@ -100,8 +100,11 @@ class GraphVizDiagrammer:
         content = ""
         if dimension == "frequency":
             bgcolor = bgcolor if self.visualize_frequency else "royalblue"
+            activity_name = self.build_activity_name(activity)
             content = (
-                f"{activity} ({'{0:,}'.format(measure)})" if self.visualize_frequency else activity
+                f"{activity_name} ({'{0:,}'.format(measure)})"
+                if self.visualize_frequency
+                else activity_name
             )
 
         elif dimension == "time" and self.visualize_time:
@@ -184,6 +187,18 @@ class GraphVizDiagrammer:
             content = format_time(measure)
 
         return bgcolor, content
+
+    def build_activity_name(self, activity_name: str) -> str:
+        if "&" in activity_name:
+            activity_name = activity_name.replace("&", "&amp;")
+        if "<" in activity_name:
+            activity_name = activity_name.replace("<", "&lt;")
+        if ">" in activity_name:
+            activity_name = activity_name.replace(">", "&gt;")
+        if "=" in activity_name:
+            activity_name = activity_name.replace("=", "&#61;")
+
+        return activity_name
 
     def get_diagram_string(self):
         return self.diagram.source

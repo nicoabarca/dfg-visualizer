@@ -1,9 +1,9 @@
 from mpdfg.utils.diagrammer import (
-    dimensions_min_and_max,
     background_color,
+    dimensions_min_and_max,
     format_time,
-    link_width,
     ids_mapping,
+    link_width,
 )
 
 
@@ -132,7 +132,8 @@ class MermaidDiagrammer:
         html_string = "<div style='background-color: {}; color: white; padding: 5px; border-bottom: 1px solid black;'>&nbsp;{}&nbsp;</div>"
         content = None
         if dimension == "frequency":
-            content = f"{activity} {self.frequency_measure(dimension_measure)}"
+            activity_name = self.build_activity_name(activity)
+            content = f"{activity_name} {self.frequency_measure(dimension_measure)}"
             color = color if self.visualize_frequency else "royalblue"
             html_string = html_string.format(color, content)
         elif dimension == "time" and self.visualize_time:
@@ -156,6 +157,18 @@ class MermaidDiagrammer:
             content = format_time(dimension_measure)
             html_string = html_string.format(color, content)
         return html_string if content else ""
+
+    def build_activity_name(self, activity_name: str) -> str:
+        if "&" in activity_name:
+            activity_name = activity_name.replace("&", "&amp;")
+        if "<" in activity_name:
+            activity_name = activity_name.replace("<", "&lt")
+        if ">" in activity_name:
+            activity_name = activity_name.replace(">", "&gt")
+        if "=" in activity_name:
+            activity_name = activity_name.replace(">", "&#61;")
+
+        return activity_name
 
     def frequency_measure(self, dimension_measure):
         return "(" + "{0:,}".format(dimension_measure) + ")" if self.visualize_frequency else ""
